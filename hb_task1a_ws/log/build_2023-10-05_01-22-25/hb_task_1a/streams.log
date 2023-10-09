@@ -1,0 +1,17 @@
+[0.374s] Invoking command in '/home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a': PYTHONPATH=/home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a/prefix_override:/home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py develop --editable --build-directory /home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a/build --no-deps install_data
+[0.520s] running develop
+[0.601s] running egg_info
+[0.601s] writing hb_task_1a.egg-info/PKG-INFO
+[0.601s] writing dependency_links to hb_task_1a.egg-info/dependency_links.txt
+[0.601s] writing entry points to hb_task_1a.egg-info/entry_points.txt
+[0.601s] writing requirements to hb_task_1a.egg-info/requires.txt
+[0.601s] writing top-level names to hb_task_1a.egg-info/top_level.txt
+[0.602s] reading manifest file 'hb_task_1a.egg-info/SOURCES.txt'
+[0.603s] writing manifest file 'hb_task_1a.egg-info/SOURCES.txt'
+[0.603s] running build_ext
+[0.603s] Creating /home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/lib/python3.10/site-packages/hb-task-1a.egg-link (link to .)
+[0.604s] Installing SnowMan_1520_executable_node script to /home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/lib/hb_task_1a
+[0.604s] 
+[0.604s] Installed /home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a
+[0.604s] running install_data
+[0.619s] Invoked command in '/home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a' returned '0': PYTHONPATH=/home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a/prefix_override:/home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py develop --editable --build-directory /home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a/build --no-deps install_data

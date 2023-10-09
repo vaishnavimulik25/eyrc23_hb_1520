@@ -1,0 +1,24 @@
+[0.383s] Invoking command in '/home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a': PYTHONPATH=/home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a/prefix_override:/home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py develop --editable --build-directory /home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a/build --no-deps install_data
+[0.527s] running develop
+[0.608s] running egg_info
+[0.608s] creating hb_task_1a.egg-info
+[0.609s] writing hb_task_1a.egg-info/PKG-INFO
+[0.609s] writing dependency_links to hb_task_1a.egg-info/dependency_links.txt
+[0.609s] writing entry points to hb_task_1a.egg-info/entry_points.txt
+[0.609s] writing requirements to hb_task_1a.egg-info/requires.txt
+[0.609s] writing top-level names to hb_task_1a.egg-info/top_level.txt
+[0.609s] writing manifest file 'hb_task_1a.egg-info/SOURCES.txt'
+[0.610s] reading manifest file 'hb_task_1a.egg-info/SOURCES.txt'
+[0.610s] writing manifest file 'hb_task_1a.egg-info/SOURCES.txt'
+[0.611s] running build_ext
+[0.611s] Creating /home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/lib/python3.10/site-packages/hb-task-1a.egg-link (link to .)
+[0.611s] Installing SnowMan_1520_executable_node script to /home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/lib/hb_task_1a
+[0.611s] 
+[0.611s] Installed /home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a
+[0.611s] running install_data
+[0.611s] creating /home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/share/ament_index
+[0.611s] creating /home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/share/ament_index/resource_index
+[0.611s] creating /home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/share/ament_index/resource_index/packages
+[0.612s] copying resource/hb_task_1a -> /home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/share/ament_index/resource_index/packages
+[0.612s] copying package.xml -> /home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/share/hb_task_1a
+[0.626s] Invoked command in '/home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a' returned '0': PYTHONPATH=/home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a/prefix_override:/home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py develop --editable --build-directory /home/g10/eyrc_hb/hb_task1a_ws/build/hb_task_1a/build --no-deps install_data

@@ -1,0 +1,4 @@
+Invoking command in '/home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim': CMAKE_PREFIX_PATH=/home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a:/opt/ros/humble /usr/bin/cmake --build /home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim -- -j20 -l20
+Invoked command in '/home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim' returned '0': CMAKE_PREFIX_PATH=/home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a:/opt/ros/humble /usr/bin/cmake --build /home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim -- -j20 -l20
+Invoking command in '/home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim': CMAKE_PREFIX_PATH=/home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a:/opt/ros/humble /usr/bin/cmake --install /home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim
+Invoked command in '/home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim' returned '0': CMAKE_PREFIX_PATH=/home/g10/eyrc_hb/hb_task1a_ws/install/hb_task_1a:/opt/ros/humble /usr/bin/cmake --install /home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim
