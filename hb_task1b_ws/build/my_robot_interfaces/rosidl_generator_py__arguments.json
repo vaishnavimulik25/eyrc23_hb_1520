@@ -1,9 +1,9 @@
 {
   "package_name": "my_robot_interfaces",
-  "output_dir": "/home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_generator_py/my_robot_interfaces",
+  "output_dir": "/home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_generator_py/my_robot_interfaces",
   "template_dir": "/opt/ros/humble/share/rosidl_generator_py/cmake/../resource",
   "idl_tuples": [
-    "/home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_adapter/my_robot_interfaces:srv/NextGoal.idl"
+    "/home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_adapter/my_robot_interfaces:srv/NextGoal.idl"
   ],
   "target_dependencies": [
     "/opt/ros/humble/share/rosidl_generator_py/cmake/../../../lib/rosidl_generator_py/rosidl_generator_py",
@@ -19,6 +19,6 @@
     "/opt/ros/humble/share/rosidl_generator_py/cmake/../resource/_msg.py.em",
     "/opt/ros/humble/share/rosidl_generator_py/cmake/../resource/_srv_pkg_typesupport_entry_point.c.em",
     "/opt/ros/humble/share/rosidl_generator_py/cmake/../resource/_srv.py.em",
-    "/home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_adapter/my_robot_interfaces/srv/NextGoal.idl"
+    "/home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_adapter/my_robot_interfaces/srv/NextGoal.idl"
   ]
 }

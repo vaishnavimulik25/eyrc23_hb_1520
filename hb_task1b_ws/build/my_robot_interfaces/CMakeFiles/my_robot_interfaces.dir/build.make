@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/g10/task1a_hb/hb_task1b_ws/src/my_robot_interfaces
+CMAKE_SOURCE_DIR = /home/g10/eyrc_hb/hb_task1b_ws/src/my_robot_interfaces
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces
+CMAKE_BINARY_DIR = /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces
 
 # Utility rule file for my_robot_interfaces.
 
@@ -66,7 +66,7 @@ include CMakeFiles/my_robot_interfaces.dir/compiler_depend.make
 # Include the progress variables for this target.
 include CMakeFiles/my_robot_interfaces.dir/progress.make
 
-CMakeFiles/my_robot_interfaces: /home/g10/task1a_hb/hb_task1b_ws/src/my_robot_interfaces/srv/NextGoal.srv
+CMakeFiles/my_robot_interfaces: /home/g10/eyrc_hb/hb_task1b_ws/src/my_robot_interfaces/srv/NextGoal.srv
 CMakeFiles/my_robot_interfaces: rosidl_cmake/srv/NextGoal_Request.msg
 CMakeFiles/my_robot_interfaces: rosidl_cmake/srv/NextGoal_Response.msg
 
@@ -83,6 +83,6 @@ CMakeFiles/my_robot_interfaces.dir/clean:
 .PHONY : CMakeFiles/my_robot_interfaces.dir/clean
 
 CMakeFiles/my_robot_interfaces.dir/depend:
-	cd /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/g10/task1a_hb/hb_task1b_ws/src/my_robot_interfaces /home/g10/task1a_hb/hb_task1b_ws/src/my_robot_interfaces /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces/CMakeFiles/my_robot_interfaces.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/g10/eyrc_hb/hb_task1b_ws/src/my_robot_interfaces /home/g10/eyrc_hb/hb_task1b_ws/src/my_robot_interfaces /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces/CMakeFiles/my_robot_interfaces.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/my_robot_interfaces.dir/depend
 

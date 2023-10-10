@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/g10/task1a_hb/hb_task1b_ws/src/my_robot_interfaces
+CMAKE_SOURCE_DIR = /home/g10/eyrc_hb/hb_task1b_ws/src/my_robot_interfaces
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces
+CMAKE_BINARY_DIR = /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces
 
 # Utility rule file for my_robot_interfaces__cpp.
 
@@ -87,8 +87,8 @@ rosidl_generator_cpp/my_robot_interfaces/srv/next_goal.hpp: /opt/ros/humble/shar
 rosidl_generator_cpp/my_robot_interfaces/srv/next_goal.hpp: /opt/ros/humble/share/rosidl_generator_cpp/resource/srv__struct.hpp.em
 rosidl_generator_cpp/my_robot_interfaces/srv/next_goal.hpp: /opt/ros/humble/share/rosidl_generator_cpp/resource/srv__traits.hpp.em
 rosidl_generator_cpp/my_robot_interfaces/srv/next_goal.hpp: rosidl_adapter/my_robot_interfaces/srv/NextGoal.idl
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating C++ code for ROS interfaces"
-	/usr/bin/python3.10 /opt/ros/humble/share/rosidl_generator_cpp/cmake/../../../lib/rosidl_generator_cpp/rosidl_generator_cpp --generator-arguments-file /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_generator_cpp__arguments.json
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating C++ code for ROS interfaces"
+	/usr/bin/python3.10 /opt/ros/humble/share/rosidl_generator_cpp/cmake/../../../lib/rosidl_generator_cpp/rosidl_generator_cpp --generator-arguments-file /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_generator_cpp__arguments.json
 
 rosidl_generator_cpp/my_robot_interfaces/srv/detail/next_goal__builder.hpp: rosidl_generator_cpp/my_robot_interfaces/srv/next_goal.hpp
 	@$(CMAKE_COMMAND) -E touch_nocreate rosidl_generator_cpp/my_robot_interfaces/srv/detail/next_goal__builder.hpp
@@ -116,6 +116,6 @@ CMakeFiles/my_robot_interfaces__cpp.dir/clean:
 .PHONY : CMakeFiles/my_robot_interfaces__cpp.dir/clean
 
 CMakeFiles/my_robot_interfaces__cpp.dir/depend:
-	cd /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/g10/task1a_hb/hb_task1b_ws/src/my_robot_interfaces /home/g10/task1a_hb/hb_task1b_ws/src/my_robot_interfaces /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces /home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces/CMakeFiles/my_robot_interfaces__cpp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/g10/eyrc_hb/hb_task1b_ws/src/my_robot_interfaces /home/g10/eyrc_hb/hb_task1b_ws/src/my_robot_interfaces /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces /home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces/CMakeFiles/my_robot_interfaces__cpp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/my_robot_interfaces__cpp.dir/depend
 

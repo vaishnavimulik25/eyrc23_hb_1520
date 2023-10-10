@@ -1,9 +1,9 @@
 {
   "package_name": "my_robot_interfaces",
-  "output_dir": "/home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_typesupport_fastrtps_c/my_robot_interfaces",
+  "output_dir": "/home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_typesupport_fastrtps_c/my_robot_interfaces",
   "template_dir": "/opt/ros/humble/share/rosidl_typesupport_fastrtps_c/resource",
   "idl_tuples": [
-    "/home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_adapter/my_robot_interfaces:srv/NextGoal.idl"
+    "/home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_adapter/my_robot_interfaces:srv/NextGoal.idl"
   ],
   "target_dependencies": [
     "/opt/ros/humble/lib/rosidl_typesupport_fastrtps_c/rosidl_typesupport_fastrtps_c",
@@ -14,6 +14,6 @@
     "/opt/ros/humble/share/rosidl_typesupport_fastrtps_c/resource/msg__type_support_c.cpp.em",
     "/opt/ros/humble/share/rosidl_typesupport_fastrtps_c/resource/srv__rosidl_typesupport_fastrtps_c.h.em",
     "/opt/ros/humble/share/rosidl_typesupport_fastrtps_c/resource/srv__type_support_c.cpp.em",
-    "/home/g10/task1a_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_adapter/my_robot_interfaces/srv/NextGoal.idl"
+    "/home/g10/eyrc_hb/hb_task1b_ws/build/my_robot_interfaces/rosidl_adapter/my_robot_interfaces/srv/NextGoal.idl"
   ]
 }
