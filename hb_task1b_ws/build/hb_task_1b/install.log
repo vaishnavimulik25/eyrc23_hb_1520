@@ -2,6 +2,14 @@
 /home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/lib/python3.10/site-packages/hb_task_1b/__pycache__/__init__.cpython-310.pyc
 /home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/share/ament_index/resource_index/packages/hb_task_1b
 /home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/share/hb_task_1b/package.xml
+/home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/share/hb_task_1b/launch/gazebo.launch.py
+/home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/share/hb_task_1b/urdf/hb_bot.urdf.xacro
+/home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/share/hb_task_1b/urdf/materials.xacro
+/home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/share/hb_task_1b/meshes/eyantra_logo.png
+/home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/share/hb_task_1b/meshes/wheel.stl
+/home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/share/hb_task_1b/meshes/base.dae
+/home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/share/hb_task_1b/config
+/home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/share/hb_task_1b/worlds/gazebo.world
 /home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/lib/python3.10/site-packages/hb_task_1b-0.0.0-py3.10.egg-info/top_level.txt
 /home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/lib/python3.10/site-packages/hb_task_1b-0.0.0-py3.10.egg-info/zip-safe
 /home/g10/eyrc_hb/hb_task1b_ws/install/hb_task_1b/lib/python3.10/site-packages/hb_task_1b-0.0.0-py3.10.egg-info/requires.txt
