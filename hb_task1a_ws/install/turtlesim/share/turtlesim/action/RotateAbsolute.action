@@ -1,8 +1,1 @@
-# The desired heading in radians
-float32 theta
----
-# The angular displacement in radians to the starting position
-float32 delta
----
-# The remaining rotation in radians
-float32 remaining
+/home/g10/eyrc_hb/hb_task1a_ws/src/ros_tutorials/turtlesim/action/RotateAbsolute.action

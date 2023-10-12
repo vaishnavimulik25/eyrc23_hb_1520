@@ -1,51 +1,64 @@
-import rclpy
-from rclpy.node import Node
-from geometry_msgs.msg import Twist
-from nav_msgs.msg import Odometry
-import time
-import math
-from tf_transformations import euler_from_quaternion
-from my_robot_interfaces.srv import NextGoal
+#!/usr/bin/env python3
+import rclpy                                         # ROS 2 Python library for creating ROS 2 nodes
+from rclpy.node import Node                          # Node class for creating ROS 2 nodes
+from geometry_msgs.msg import Twist                   # Publishing to /cmd_vel with msg type: Twist
+from nav_msgs.msg import Odometry                    # Subscribing to /odom with msg type: Odometry
+import time                                          # Python time module for time-related functions
+import math                                          # Python math module for mathematical functions
+from tf_transformations import euler_from_quaternion # Odometry is given as a quaternion, but for the controller we'll need to find the orientaion theta by converting to euler angle
+from my_robot_interfaces.srv import NextGoal          # Service
 
-PI=3.14
 
 class HBTask1BController(Node):
-
-   def __init__(self):
+    def __init__(self):
         super().__init__('hb_task1b_controller')
-        
-        # Initialze Publisher and Subscriber
-        # We'll leave this for you to figure out the syntax for
-        # initialising publisher and subscriber of cmd_vel and odom respectively
-
+        self.get_logger().info("Controller node has been started with changes 2")
+        self.cmd_vel_pub_ = self.create_publisher(Twist, "/cmd_vel", 10)
+        self.odom_sub_ = self.create_subscription(
+            Odometry.pose, "/odom", self.odometryCb, 10)
         # Declare a Twist message
-        self.vel = Twist()
+        
         # Initialise the required variables to 0
-
+        self.hb_x = 0
+        self.hb_y = 0
+        self.hb_theta = 0
         # For maintaining control loop rate.
         self.rate = self.create_rate(100)
         # Initialise variables that may be needed for the control loop
         # For ex: x_d, y_d, theta_d (in **meters** and **radians**) for defining desired goal-pose.
         # and also Kp values for the P Controller
-
-
         # client for the "next_goal" service
         self.cli = self.create_client(NextGoal, 'next_goal')      
         self.req = NextGoal.Request() 
         self.index = 0
+        
+    def odometryCb(self):
+        self.get_logger().info("publish call222222222222222222222222")
 
-   def main(args=None):
+        vel = Twist()
+        # global hb_x, hb_y, hb_theta
+        vel.linear.x = 1000
+        vel.linear.y = 1000
+        vel.angular.z = 0
+        self.cmd_vel_pub_.publish(vel)
+
+        
+    def send_request(self, index):
+        self.req.request_goal = self.index                 
+        self.future = self.cli.call_async(self.req)
+
+    # Write your code to take the msg and update the three variables
+
+def main(args=None):
     rclpy.init(args=args)
     
     # Create an instance of the EbotController class
     ebot_controller = HBTask1BController()
-   
     # Send an initial request with the index from ebot_controller.index
     ebot_controller.send_request(ebot_controller.index)
     
     # Main loop
     while rclpy.ok():
-
         # Check if the service call is done
         if ebot_controller.future.done():
             try:
@@ -56,10 +69,9 @@ class HBTask1BController(Node):
                     'Service call failed %r' % (e,))
             else:
                 #########           GOAL POSE             #########
-                x = [4, -4, -4, 4, 0]
-                y = [4, 4, -4, -4, 0]
-                theta = [0, PI/2, PI, -PI/2, 0]
-
+                x_goal      = response.x_goal
+                y_goal      = response.y_goal
+                theta_goal  = response.theta_goal
                 ebot_controller.flag = response.end_of_list
                 ####################################################
 
@@ -94,12 +106,13 @@ class HBTask1BController(Node):
                 ebot_controller.send_request(ebot_controller.index)
                 ####################################################
 
-        # Spin once to process callbacks
-        rclpy.spin_once(ebot_controller)
+    # Spin once to process callbacks
+                rclpy.spin_once(ebot_controller)
     
     # Destroy the node and shut down ROS
+    # rclpy.spin(ebot_controller)
     ebot_controller.destroy_node()
     rclpy.shutdown()
 
-    if __name__ == '__main__':
-        main()
+if __name__ == '__main__':
+    main()

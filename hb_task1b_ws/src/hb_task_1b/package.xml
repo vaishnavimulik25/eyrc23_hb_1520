@@ -13,8 +13,16 @@
 <exec_depend>ros2launch</exec_depend>
 <exec_depend>gazebo_ros_pkgs</exec_depend>
 <depend>rclpy</depend>
+<depend>geometry_msgs</depend>
+<depend>nav_msgs</depend>
+<depend>time</depend>
+<depend>math</depend>
 <depend>launch </depend>
 <depend>launch_ros.actions  </depend>
+<depend>random</depend>
+<depend>numpy</depend>
+<depend>my_robot_interfaces</depend>
+<depend>std_msgs</depend>
 
 
   <test_depend>ament_copyright</test_depend>

@@ -1,3 +1,1 @@
-uint8 r
-uint8 g
-uint8 b
+/home/g10/eyrc_hb/hb_task1a_ws/src/ros_tutorials/turtlesim/msg/Color.msg

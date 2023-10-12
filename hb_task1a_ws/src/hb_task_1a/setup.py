@@ -20,8 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "SnowMan_1520_executable_node = hb_task_1a.task_1a_1520:main",
-            "test_node = hb_task_1a.aaise_hi:main"
+            "task_1a_1520 = hb_task_1a.task_1a_1520:main",
         ],
     },
 )

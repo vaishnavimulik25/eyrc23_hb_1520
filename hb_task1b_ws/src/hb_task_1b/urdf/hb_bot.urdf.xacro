@@ -114,7 +114,7 @@
         <axis xyz="0.0 1.0 0.0"/>
          <limit
             effort="5"
-            velocity="5" />
+            velocity="5000" />
     </joint>
 
     <!-- material properties -->
@@ -168,7 +168,7 @@
         <axis xyz="0.0 1.0 0.0"/>
          <limit
             effort="5"
-            velocity="5" />
+            velocity="5000" />
     </joint>
 
     <!-- material properties -->
@@ -222,7 +222,7 @@
         <axis xyz="0.0 1.0 0.0"/>
          <limit
             effort="5"
-            velocity="5" />
+            velocity="5000" />
     </joint>
 
     <!-- material properties -->
@@ -232,13 +232,13 @@
 
 <!-- ros_control plugin -->
 
-  <gazebo>
-    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <odometryRate>20.0</odometryRate>
-      <robotBaseFrame>chasis</robotBaseFrame>
-    </plugin>
-  </gazebo>
+    <gazebo>
+        <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+            <commandTopic>cmd_vel</commandTopic>
+            <odometryTopic>odom</odometryTopic>
+            <odometryFrame>odom</odometryFrame>
+            <odometryRate>20.0</odometryRate>
+            <robotBaseFrame>chasis</robotBaseFrame>
+        </plugin>
+    </gazebo>
 </robot>

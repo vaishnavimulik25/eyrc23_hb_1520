@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #######################################     DO NOT MODIFY THIS  FILE     ##########################################
 
 import rclpy
@@ -16,6 +17,7 @@ class ServiceNode(Node):
 
     def __init__(self):
         super().__init__('service_node')
+        self.get_logger().info("Service node has been started")
         self.service = self.create_service(
             NextGoal, 'next_goal', self.next_goal_callback)
         self.publish_shape = self.create_publisher(String, '/shape', 10)
@@ -45,7 +47,7 @@ class ServiceNode(Node):
         response.y_goal = y
         response.theta_goal = 0.0
         response.end_of_list = self.flag
-        # self.get_logger().info(f"Received request: {request.request_goal}")
+        self.get_logger().info(f"Received request: {request.request_goal}")
         if self.logger_flag == 1:
             self.get_logger().info("Service started...")
             self.logger_flag = 0

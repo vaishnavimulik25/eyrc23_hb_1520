@@ -9,7 +9,6 @@ setup.py
 ../../build/hb_task_1a/hb_task_1a.egg-info/top_level.txt
 ../../build/hb_task_1a/hb_task_1a.egg-info/zip-safe
 hb_task_1a/__init__.py
-hb_task_1a/aaise_hi.py
 hb_task_1a/task_1a_1520.py
 resource/hb_task_1a
 test/test_copyright.py

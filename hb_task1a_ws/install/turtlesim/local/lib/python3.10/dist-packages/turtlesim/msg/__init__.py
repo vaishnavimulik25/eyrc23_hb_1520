@@ -1,2 +1,1 @@
-from turtlesim.msg._color import Color  # noqa: F401
-from turtlesim.msg._pose import Pose  # noqa: F401
+/home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim/rosidl_generator_py/turtlesim/msg/__init__.py

@@ -1,3 +1,1 @@
-float32 x
-float32 y
-float32 theta
+/home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim/rosidl_cmake/srv/TeleportAbsolute_Request.msg
