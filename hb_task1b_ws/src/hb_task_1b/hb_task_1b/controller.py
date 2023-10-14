@@ -21,17 +21,12 @@ class HBTask1BController(Node):
         
         # For maintaining control loop rate.
         self.rate = self.create_rate(100)
-
-        # x_goal=0
-        # y_goal=0
-        # theta_goal=0
-
         # Initialize required variables
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
-        self.k_linear = 1
-        self.k_angular = 1
+        self.k_linear = 1.0
+        self.k_angular = 1.0
 
         # Initialize a Twist message for velocity commands
         self.vel_msg = Twist()
@@ -40,20 +35,23 @@ class HBTask1BController(Node):
         self.client = self.create_client(NextGoal, 'next_goal')
         self.index = 0
 
-        while not self.client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info('Service not available, waiting...')
+        # while not self.client.wait_for_service(timeout_sec=1.0):
+        #     self.get_logger().info('Service not available, waiting...')
 
     def odometry_callback(self, msg):
         # Update the position and orientation from the Odometry message
+        orientation_q = msg.pose.pose.orientation
+        orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
+        (roll, pitch, yaw) = euler_from_quaternion(orientation_list)
         self.hb_x = msg.pose.pose.position.x
         self.hb_y = msg.pose.pose.position.y
-        self.hb_theta = msg.twist.twist.angular.z
+        self.hb_theta = yaw
         
         # Implement your control logic here
         # self.calculate_velocity_commands (x_goal,y_goal,theta_goal)
 
-    def distance(self):
-        return abs(math.sqrt((self.hb_x - self.x_goal) ** 2 + (self.hb_y - self.y_goal) ** 2))
+    def distance(self,x,y):
+        return abs(math.sqrt((self.hb_x - x) ** 2 + (self.hb_y - y) ** 2))
 
     def calculate_velocity_commands(self, x, y, th):
         # Implement your control logic to calculate vel_msg based on the current position and goal
@@ -65,7 +63,7 @@ class HBTask1BController(Node):
         #     self.vel_msg.linear.y = -3.0
         #     self.vel_msg.angular.z = 0.001
         self.cmd_vel_pub.publish(self.vel_msg)
-        self.get_logger().info('vel published')
+        # self.get_logger().info('vel published is', self.vel_msg)
 
 # Note: You'll need to integrate this code with your robot's sensors and odometry to obtain the current position and
 # continuously update the velocity commands as the robot moves.
@@ -99,14 +97,17 @@ def main(args=None):
                     flag = response.end_of_list
                     
                     # Implement your control logic here
+                    # while ebot_controller.distance > 0.1:
                     ebot_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
+                    # ebot_controller.send_request(ebot_controller.index)
+                if ebot_controller.distance(x_goal,y_goal) < 0.1 :
                     ebot_controller.index += 1
                     if flag == 1 :
                         ebot_controller.index = 0
-                    ebot_controller.send_request(ebot_controller.index)
-        # time.sleep(1)
-        # rclpy.spin_once(ebot_controller)
-        # ebot_controller.rate.sleep()
+            # ebot_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
+        time.sleep(1)
+        rclpy.spin_once(ebot_controller)
+        ebot_controller.rate.sleep()
 
 
     # rclpy.spin(ebot_controller)
