@@ -25,7 +25,7 @@ class HBTask1BController(Node):
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
-        self.k_linear = 0.9
+        self.k_linear = 0.6
         self.k_angular = 0.9
 
         # Initialize a Twist message for velocity commands
