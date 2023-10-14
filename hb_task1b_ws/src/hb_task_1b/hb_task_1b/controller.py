@@ -25,8 +25,8 @@ class HBTask1BController(Node):
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
-        self.k_linear = 1.0
-        self.k_angular = 1.0
+        self.k_linear = 0.9
+        self.k_angular = 0.9
 
         # Initialize a Twist message for velocity commands
         self.vel_msg = Twist()
@@ -56,9 +56,16 @@ class HBTask1BController(Node):
     def calculate_velocity_commands(self, x, y, th):
         # Implement your control logic to calculate vel_msg based on the current position and goal
         # if self.hb_x < 3.0:
-        self.vel_msg.linear.x = self.k_linear * (x - self.hb_x)
-        self.vel_msg.linear.y = self.k_linear * (y - self.hb_y)
-        self.vel_msg.angular.z = self.k_angular * (th - self.hb_theta)
+        x_error = (x - self.hb_x)
+        y_error = (y - self.hb_y)
+        theta_error = (th - self.hb_theta)
+        
+        robot_frame_x_vel = (x_error * math.cos(self.hb_theta)) - (y_error * math.sin(self.hb_theta))
+        robot_frame_y_vel = (y_error * math.cos(self.hb_theta)) - (x_error * math.sin(self.hb_theta))
+        
+        self.vel_msg.linear.x = self.k_linear * robot_frame_x_vel
+        self.vel_msg.linear.y = self.k_linear * robot_frame_y_vel
+        self.vel_msg.angular.z = self.k_angular * theta_error
         # else:
         #     self.vel_msg.linear.y = -3.0
         #     self.vel_msg.angular.z = 0.001
@@ -105,7 +112,7 @@ def main(args=None):
                     if flag == 1 :
                         ebot_controller.index = 0
             # ebot_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
-        time.sleep(1)
+        # time.sleep(1)
         rclpy.spin_once(ebot_controller)
         ebot_controller.rate.sleep()
 
