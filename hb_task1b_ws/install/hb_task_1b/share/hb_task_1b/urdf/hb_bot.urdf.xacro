@@ -31,6 +31,9 @@
         
         
     </joint>
+    <gazebo reference="footprint_link">
+        <material>Gazebo/Black</material>
+    </gazebo>
 
     <!--Base link-->
     <link name ="base_link">
@@ -47,7 +50,7 @@
                 izz="0.011666666666667" />    
 
         </inertial>
-         <collision name="collision">
+        <collision name="collision">
             <origin
                 xyz="0 0.0 0.28"
                 rpy="0 0 0" />
@@ -173,7 +176,7 @@
 
     <!-- material properties -->
     <gazebo reference="left_wheel">
-        <material>Gazebo/red</material>
+        <material>Gazebo/Red</material>
     </gazebo>
 
     <!-- rear_wheel -->
@@ -227,7 +230,7 @@
 
     <!-- material properties -->
     <gazebo reference="rear_wheel">
-        <material>Gazebo/Black</material>
+        <material>Gazebo/Green</material>
     </gazebo>
 
 <!-- ros_control plugin -->

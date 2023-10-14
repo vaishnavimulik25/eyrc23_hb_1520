@@ -28,7 +28,6 @@ class ServiceNode(Node):
 
     def next_goal_callback(self, request, response):
         msg = String()
-
         goal_request = request.request_goal
         if request.request_goal < len(self.shape_list[1][0]):
             x = self.shape_list[1][0][(request.request_goal)]
