@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import rclpy                                         # ROS 2 Python library for creating ROS 2 nodes
 from rclpy.node import Node                          # Node class for creating ROS 2 nodes
 from geometry_msgs.msg import Twist                   # Publishing to /cmd_vel with msg type: Twist
@@ -8,126 +7,109 @@ import time                                          # Python time module for ti
 import math                                          # Python math module for mathematical functions
 from tf_transformations import euler_from_quaternion # Odometry is given as a quaternion, but for the controller we'll need to find the orientaion theta by converting to euler angle
 from my_robot_interfaces.srv import NextGoal          # Service
-from functools import partial
+
 
 
 class HBTask1BController(Node):
     def __init__(self):
         super().__init__('hb_task1b_controller')
         self.get_logger().info("Controller node has been started")
+        
         self.cmd_vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
         self.odom_sub = self.create_subscription(
-            Odometry, 'odom', self.odometryCb, 10)
-        self.index = 0
-        # Declare a Twist message
-        self.vel_msg = Twist()
-        
-        # Initialise the required variables to 0
-        global x_goal, y_goal, theta_goal, hb_x, hb_y, hb_theta
-        x_goal = 0.0
-        y_goal = 0.0
-        theta_goal = 0.0
+            Odometry, 'odom', self.odometry_callback, 10)
         
         # For maintaining control loop rate.
         self.rate = self.create_rate(100)
-        
-        # Initializing variables used for control loop (x_d, y_d, theta_d)
-        self.Kp_linear = 1.0
-        self.Kp_angular = 1.0
-        
-        hb_x = 0
-        hb_y = 0
-        hb_theta = 0
 
-        # initialising publisher and subscriber of cmd_vel and odom respectively
+        # x_goal=0
+        # y_goal=0
+        # theta_goal=0
 
-        
+        # Initialize required variables
+        self.hb_x = 0.0
+        self.hb_y = 0.0
+        self.hb_theta = 0.0
+        self.k_linear = 1
+        self.k_angular = 1
+
+        # Initialize a Twist message for velocity commands
+        self.vel_msg = Twist()
+
         # Create a client for the "next_goal" service
         self.client = self.create_client(NextGoal, 'next_goal')
-        self.req = NextGoal.Request() 
-        self.future = None  # Initialize the future variable
+        self.index = 0
 
-    def odometryCb(self, msg):
-        # global x_goal, y_goal, theta_goal, x_d, y_d, theta_d
-        orientation_q = msg.pose.pose.orientation
-        orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
-        (roll, pitch, yaw) = euler_from_quaternion(orientation_list)
-        
+        while not self.client.wait_for_service(timeout_sec=1.0):
+            self.get_logger().info('Service not available, waiting...')
+
+    def odometry_callback(self, msg):
         # Update the position and orientation from the Odometry message
-        hb_x = msg.pose.pose.position.x
-        hb_y = msg.pose.pose.position.y
-        hb_theta = yaw
-        # Calculate errors in global frame
-        error_x = x_goal - hb_x
-        error_y = y_goal - hb_y
-        error_theta = theta_goal - hb_theta
-        # Calculate velocity commands using a P controller
-        self.vel_msg.linear.x = self.Kp_linear * error_x
-        self.vel_msg.linear.y = self.Kp_linear * error_y
-        self.vel_msg.angular.z = self.Kp_angular * error_theta
-        # Publish the velocity commands
-        self.cmd_vel_pub.publish(self.vel_msg)
+        self.hb_x = msg.pose.pose.position.x
+        self.hb_y = msg.pose.pose.position.y
+        self.hb_theta = msg.twist.twist.angular.z
+        
         # Implement your control logic here
-        
-    def is_goal_reached(self):
-        distance = abs(((x_goal - hb_x) ** 2 + (y_goal - hb_y) ** 2) ** (0.5))
-        return distance < 0.1
+        # self.calculate_velocity_commands (x_goal,y_goal,theta_goal)
 
+    def distance(self):
+        return abs(math.sqrt((self.hb_x - self.x_goal) ** 2 + (self.hb_y - self.y_goal) ** 2))
+
+    def calculate_velocity_commands(self, x, y, th):
+        # Implement your control logic to calculate vel_msg based on the current position and goal
+        # if self.hb_x < 3.0:
+        self.vel_msg.linear.x = self.k_linear * (x - self.hb_x)
+        self.vel_msg.linear.y = self.k_linear * (y - self.hb_y)
+        self.vel_msg.angular.z = self.k_angular * (th - self.hb_theta)
+        # else:
+        #     self.vel_msg.linear.y = -3.0
+        #     self.vel_msg.angular.z = 0.001
+        self.cmd_vel_pub.publish(self.vel_msg)
+        self.get_logger().info('vel published')
+
+# Note: You'll need to integrate this code with your robot's sensors and odometry to obtain the current position and
+# continuously update the velocity commands as the robot moves.
     def send_request(self, index):
-        self.req.request_goal = index
-        self.future = self.client.call_async(self.req)
-        # self.x_d = x[self.req.request_goal]
-        # self.y_d = y[self.req.request_goal]
-        # self.theta_d = th[self.req.request_goal]
+        # Send a request to the "next_goal" service
+        request = NextGoal.Request()
+        request.request_goal = index
+        future = self.client.call_async(request)
+        return future
 
-        # self.client.call_async(self.req, callback=partial(self.next_goal_callback))
-        # self.future.add_done_callback(self.handle_response)
-    
-    # def handle_response(self, future):
-    #     try:
-    #         response=future.result()
-    #     except Exception as e:
-    #         self.get_logger().info('Service call failed %r' % (e,))
-        
-            
 def main(args=None):
     rclpy.init(args=args)
     ebot_controller = HBTask1BController()
-    ebot_controller.send_request(ebot_controller.index)
 
     while rclpy.ok():
         if ebot_controller.client.wait_for_service(timeout_sec=1.0):
-            if ebot_controller.future.done():
+            future = ebot_controller.send_request(ebot_controller.index)
+            rclpy.spin_until_future_complete(ebot_controller, future)
+
+            if future.done():
                 try:
-                    response = ebot_controller.future.result()
-                    ebot_controller.get_logger().info("Received response")
+                    response = future.result()
                     # Extract goal pose information from the response
-                    # Implement your control logic here
-                    # ebot_controller.calculate_velocity_commands()
                 except Exception as e:
                     ebot_controller.get_logger().info('Service call failed %r' % (e,))
+                    
                 else:
-                    ebot_controller.get_logger().error("index is", ebot_controller.index)
-                    # ebot_controller.future.add_done_callback(ebot_controller.req, response)
-                    # ebot_controller.index = response.next_goal
-                    x_goal      = response.x_goal
-                    y_goal      = response.y_goal
-                    theta_goal  = response.theta_goal
-                    ebot_controller.flag = response.end_of_list
-                    # ebot_controller.calculate_velocity_commands()
-                    #If Condition is up to you
-                    ############     DO NOT MODIFY THIS       #########
-                    # ebot_controller.send_request(ebot_controller.x_goal,ebot_controller.y_goal,ebot_controller.theta_goal)
-                    ####################################################
-                # if ebot_controller.is_goal_reached():
+                    x_goal = response.x_goal
+                    y_goal = response.y_goal
+                    theta_goal = response.theta_goal
+                    flag = response.end_of_list
+                    
+                    # Implement your control logic here
+                    ebot_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
                     ebot_controller.index += 1
-                    if ebot_controller.flag == 1 :
+                    if flag == 1 :
                         ebot_controller.index = 0
                     ebot_controller.send_request(ebot_controller.index)
-            # self.send_request()
-            rclpy.spin_once(ebot_controller)
-            ebot_controller.rate.sleep()
-        
+        # time.sleep(1)
+        # rclpy.spin_once(ebot_controller)
+        # ebot_controller.rate.sleep()
+
+
+    # rclpy.spin(ebot_controller)
     ebot_controller.destroy_node()
     rclpy.shutdown()
 
