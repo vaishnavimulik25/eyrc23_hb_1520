@@ -1,0 +1,8 @@
+*.[oa]
+*~
+*.vscode
+
+#ignore all files in any directory named build,install,log
+build/
+install/
+log/
