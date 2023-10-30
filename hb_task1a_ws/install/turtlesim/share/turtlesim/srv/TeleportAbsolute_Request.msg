@@ -1,1 +1,0 @@
-/home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim/rosidl_cmake/srv/TeleportAbsolute_Request.msg

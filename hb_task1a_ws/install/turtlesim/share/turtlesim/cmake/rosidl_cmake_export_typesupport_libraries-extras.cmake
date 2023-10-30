@@ -1,1 +1,0 @@
-/home/g10/eyrc_hb/hb_task1a_ws/build/turtlesim/rosidl_cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
