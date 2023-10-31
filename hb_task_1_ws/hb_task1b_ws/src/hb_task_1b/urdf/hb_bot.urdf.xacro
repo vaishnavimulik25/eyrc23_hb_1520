@@ -18,7 +18,7 @@
 
 
 <robot name="hb_bot" xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:include filename="/home/g10/eyrc_hb/hb_task1b_ws/src/hb_task_1b/urdf/materials.xacro"/>
+    <xacro:include filename="/home/vaishnavi/eyrc23_hb_1520/hb_task_1_ws/hb_task1b_ws/src/hb_task_1b/urdf/materials.xacro"/>
     
     <link name ="footprint_link">
     </link>
