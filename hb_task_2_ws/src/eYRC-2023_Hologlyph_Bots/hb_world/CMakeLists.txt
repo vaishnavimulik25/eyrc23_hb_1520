@@ -14,7 +14,7 @@ find_package(ament_cmake_python REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(urdf REQUIRED)
-#find_package(xacro REQUIRED)
+find_package(xacro REQUIRED)
 
 
 if(BUILD_TESTING)
