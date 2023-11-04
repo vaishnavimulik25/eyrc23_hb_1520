@@ -24,7 +24,9 @@ setup(
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
+        
         'console_scripts': [
+            #package_name.file_name:function_name
             'feedback = hb_task2a.feedback:main'
          ],
     },

@@ -44,9 +44,14 @@ def generate_launch_description():
             os.path.join(pkg_sim_bot, 'launch', 'Spawn_bot.launch.py'),
         )
     )
+
+    feedback_node = Node(
+        package = "hb_task2a",
+        executable = "feedback"
+    )
     return LaunchDescription([
         world,
-        spwan_bot
-  
+        spwan_bot,
+        feedback_node 
         
         ])

@@ -20,10 +20,13 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
+import cv2
+import argparse
+from cv_bridge import CvBridge #for using cv_bridge for converting ros image to opencv image
 
 # Import the required modules
 ##############################################################
-class ArUcoDetector(Node):
+class ArUcoDetector(Node,CvBridge):
 
     def __init__(self):
         super().__init__('ar_uco_detector')
@@ -33,7 +36,8 @@ class ArUcoDetector(Node):
 
     def image_callback(self, msg):
         #convert ROS image to opencv image
-        cv_image = self.cv_bridge.imgmsg_to_cv2(msg,desired_encoding='bgr8')
+        cvb = CvBridge()
+        cv_image = cvb.imgmsg_to_cv2(msg,desired_encoding='bgr8')
         self.get_logger().info("cv image converted")        
         #Detect Aruco marker
         arucoDict = cv2.aruco.Dictionary_get(ARUCO_DICT[args["type"]])
