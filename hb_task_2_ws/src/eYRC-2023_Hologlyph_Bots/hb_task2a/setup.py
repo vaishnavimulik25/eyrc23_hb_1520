@@ -28,6 +28,8 @@ setup(
         'console_scripts': [
             #package_name.file_name:function_name
             'feedback = hb_task2a.feedback:main'
+            #'controller = hb_task2a.controller:main',
+            #'service_node = hb_task2a.service_node:main'
          ],
     },
 )

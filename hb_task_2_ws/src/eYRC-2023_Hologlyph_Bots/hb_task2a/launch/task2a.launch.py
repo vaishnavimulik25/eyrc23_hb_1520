@@ -49,9 +49,18 @@ def generate_launch_description():
         package = "hb_task2a",
         executable = "feedback"
     )
+#    controller = Node(
+#        package = "hb_task2a",
+#        executable = "controller"
+#    )
+#    service_node = Node(
+#        package = "hb_task2a",
+#        executable = "service_node"
+#    )
     return LaunchDescription([
         world,
         spwan_bot,
-        feedback_node 
-        
+        feedback_node
+        #controller,
+        #service_node
         ])
