@@ -73,10 +73,21 @@ class ArUcoDetector(Node,CvBridge):
         arucoParams = cv2.aruco.DetectorParameters()
         (corners,ids,rejected) = cv2.aruco.detectMarkers(cv_image, arucoDict, parameters=arucoParams)
         
-        self.get_logger().info(corners)
+        self.get_logger().info("corners")        
         
         # Publish the bot coordinates to the topic  /detected_aruco
-        #self.aruco_publisher = self.create_publisher(Pose)
+        (x1,y1) = corners[0][0][0][:2]
+        (x2,y2) = corners[0][0][1][:2]
+        (x3,y3) = corners[0][0][2][:2]
+        (x4,y4) = corners[0][0][3][:2]
+        x_centroid = (x1 + x2 + x3 + x4)/4
+        y_centroid = (y1 + y2 + y3 + y4)/4
+        coordinates = [x_centroid,y_centroid]
+
+        self.get_logger().info("coordinates")        
+        self.get_logger().info(coordinates)        
+        self.aruco_publisher = self.create_publisher(Pose,"/detected_aruco",10)
+        self.aruco_publisher.publish(coordinates)
 
 
 def main(args=None):
