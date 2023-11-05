@@ -86,19 +86,18 @@ class HBController(Node):
         # client for the "next_goal" service ie provide type and name of the
         # service ,cli is object representing the client
         self.cli = self.create_client(NextGoal, 'next_goal')      
-        #wait until service is not up
-        while not self.cli.wait_for_service(1.0):
-            self.get_logger().warn("Waiting for service...")
         #create a request
         self.req = NextGoal.Request() 
         self.index = 0
 
     def aruco_callback(self, msg):
         # Update the position and orientation fromaruco message 
+        D = 22
+        P = 50
         c = D/P #conversion factor for pixel to meters 
         self.hb_x = D/2 - msg.x * c # origin shifted
         self.hb_y = D/2 - msg.y * c
-        self.hb_theta = msg.theta
+        self.hb_theta = msg.theta * c
 
     def distance(self,x,y):
         return abs(math.sqrt((self.hb_x - x) ** 2 + (self.hb_y - y) ** 2))
@@ -156,42 +155,43 @@ def main(args=None):
     # Create an instance of the HBController class
     hb_controller = HBController()
    
-    # Send an initial request with the index from ebot_controller.index
-    hb_controller.send_request(hb_controller.index)
-    
     # Main loop
     while rclpy.ok():
 
+        
+        if hb_controller.cli.wait_for_service(timeout_sec=1.0):
+            hb_controller.send_request(hb_controller.index)
+            rclpy.spin_until_future_complete(hb_controller, hb_controller.future)
         # Check if the service call is done
-        if hb_controller.future.done():
-            try:
-                # response from the service call of form x,y,theta goal
-                response = hb_controller.future.result()
-            except Exception as e:
-                hb_controller.get_logger().infselfo(
-                    'Service call failed %r' % (e,))
-            else:
+            if hb_controller.future.done():
+                try:
+                    # response from the service call of form x,y,theta goal
+                    response = hb_controller.future.result()
+                except Exception as e:
+                    hb_controller.get_logger().infselfo(
+                        'Service call failed %r' % (e,))
+                else:
                 #########           GOAL POSE             #########
-                x_goal      = response.x_goal
-                y_goal      = response.y_goal
-                theta_goal  = response.theta_goal
-                hb_controller.flag = response.end_of_list
+                    x_goal      = response.x_goal
+                    y_goal      = response.y_goal
+                    theta_goal  = response.theta_goal
+                    hb_controller.flag = response.end_of_list
                 ####################################################
                 
-                hb_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
+                    hb_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
 
                 # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
                         
                 ############     DO NOT MODIFY THIS       #########
-            if hb_controller.distance(x_goal,y_goal) < 0.1 :
-                hb_controller.index += 1
-                if hb_controller.flag == 1 :
-                    hb_controller.index = 0
-                hb_controller.send_request(hb_controller.index)
+                if hb_controller.distance(x_goal,y_goal) < 0.1 :
+                    hb_controller.index += 1
+                    if hb_controller.flag == 1 :
+                        hb_controller.index = 0
                 ####################################################
 
         # Spin once to process callbacks
         rclpy.spin_once(hb_controller)
+        hb_controller.rate.sleep()
     
     # Destroy the node and shut down ROS
     hb_controller.destroy_node()
