@@ -30,12 +30,13 @@
 
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Twist
-from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Wrench
+from geometry_msgs.msg import Pose2D
 import time
 import math
 from tf_transformations import euler_from_quaternion
-from my_robot_interfaces.srv import NextGoal             
+from my_robot_interfaces.srv import NextGoal
+import numpy as np
 
 # You can add more if required
 ##############################################################
@@ -55,40 +56,98 @@ class HBController(Node):
         super().__init__('hb_controller')
         
         # Initialze Publisher and Subscriber
-        # NOTE: You are strictly NOT-ALLOWED to use "cmd_vel" or "odom" topics in this task
-	    #	Use the below given topics to generate motion for the robot.
-	    #   /hb_bot_1/left_wheel_force,
-	    #   /hb_bot_1/right_wheel_force,
-	    #   /hb_bot_1/left_wheel_force
-
-
+        self.aruco_subscriber = self.create_subscription(Pose2D,"/detected_aruco",self.aruco_callback,10)
+        self.left_pub = self.create_publisher(Wrench,'/hb_bot_1/left_wheel_force',10)
+        self.right_pub = self.create_publisher(Wrench,'/hb_bot_1/right_wheel_force',10)
+        self.rear_pub = self.create_publisher(Wrench,'/hb_bot_1/rear_wheel_force',10)
 
 
         # For maintaining control loop rate.
         self.rate = self.create_rate(100)
 
+        # Initialize a Twist message for velocity commands
+        self.vel_left_msg = Wrench()
+        self.vel_right_msg = Wrench()
+        self.vel_rear_msg = Wrench()
 
-        # client for the "next_goal" service
+        # Initialize required variables
+        self.hb_x = 0.0
+        self.hb_y = 0.0
+        self.hb_theta = 0.0
+        self.k_linear = 0.6
+        self.k_angular = 0.9
+        self.v_left = 0.0
+        self.v_right = 0.0
+        self.v_rear = 0.0
+        self.vel_x = 0.0
+        self.vel_y = 0.0
+        self.vel_theta = 0.0
+
+        # client for the "next_goal" service ie provide type and name of the
+        # service ,cli is object representing the client
         self.cli = self.create_client(NextGoal, 'next_goal')      
+        #wait until service is not up
+        while not cli.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for service...")
+        #create a request
         self.req = NextGoal.Request() 
         self.index = 0
 
+    def aruco_callback(self, msg):
+        # Update the position and orientation from the Odometry message
+        self.hb_x = msg.x
+        self.hb_y = msg.y
+        self.hb_theta = msg.theta
+
+    def distance(self,x,y):
+        return abs(math.sqrt((self.hb_x - x) ** 2 + (self.hb_y - y) ** 2))
     
+    def calculate_velocity_commands(self, x, y, th):
+        # Calculate Error from feedback
+        x_error = (x - self.hb_x)
+        y_error = (y - self.hb_y)
+        theta_error = (th - self.hb_theta)
+
+        # Change the frame by using Rotation Matrix (If you find it required)
+        robot_frame_x_vel = (x_error * math.cos(self.hb_theta)) - (y_error * math.sin(self.hb_theta))
+        robot_frame_y_vel = (y_error * math.cos(self.hb_theta)) - (x_error * math.sin(self.hb_theta))
+
+        # Calculate the required velocity of bot for the next iteration(s)
+        self.vel_x = self.k_linear * robot_frame_x_vel
+        self.vel_y = self.k_linear * robot_frame_y_vel
+        self.vel_theta = self.k_angular * theta_error
+
+        # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
+        inverse_kinematics()
+
+        # Apply appropriate force vectors
+        self.vel_left_msg.force.y = self.v_left
+        self.vel_right_msg.force.y = self.v_right
+        self.vel_rear_msg.force.y = self.v_rear
+
+        #Publish velocities respectively  
+        self.left_pub.publish(self.vel_left_msg)
+        self.right_pub.publish(self.vel_right_msg)
+        self.rear_pub.publish(self.vel_rear_msg)
+
     # Method to create a request to the "next_goal" service
     def send_request(self, request_goal):
+        #fill the request which was made earlier
         self.req.request_goal = request_goal
+        #calls the service in asynchronous way,future calls callback which can
+        #can be used to change the settings 
         self.future = self.cli.call_async(self.req)
         
 
     def inverse_kinematics():
-        ############ ADD YOUR CODE HERE ############
-
-        # INSTRUCTIONS & HELP : 
-        #	-> Use the target velocity you calculated for the robot in previous task, and
         #	Process it further to find what proportions of that effort should be given to 3 individuals wheels !!
+        matrix_3x3 = np.array([[-0.3535,-0.7071,0.3535],[-0.3535,0.7071,0.3535],[0.5,0,0.5]])
+        
+        vector_3x1 = np.array([self.vel_x, self.vel_y, self.vel_theta])
+        result = np.dot(matrix_3x3,vector_3x1)
+        self.v_left, self.v_right, self.v_rear = result
+
         #	Publish the calculated efforts to actuate robot by applying force vectors on provided topics
-        ############################################
-        pass
 
 
 def main(args=None):
@@ -106,7 +165,7 @@ def main(args=None):
         # Check if the service call is done
         if hb_controller.future.done():
             try:
-                # response from the service call
+                # response from the service call of form x,y,theta goal
                 response = hb_controller.future.result()
             except Exception as e:
                 hb_controller.get_logger().infselfo(
@@ -119,19 +178,12 @@ def main(args=None):
                 hb_controller.flag = response.end_of_list
                 ####################################################
                 
-                # Calculate Error from feedback
-
-                # Change the frame by using Rotation Matrix (If you find it required)
-
-                # Calculate the required velocity of bot for the next iteration(s)
-                
-                # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
-
-                # Apply appropriate force vectors
+                hb_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
 
                 # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
                         
                 ############     DO NOT MODIFY THIS       #########
+            if hb_controller.distance(x_goal,y_goal) < 0.1 :
                 hb_controller.index += 1
                 if hb_controller.flag == 1 :
                     hb_controller.index = 0

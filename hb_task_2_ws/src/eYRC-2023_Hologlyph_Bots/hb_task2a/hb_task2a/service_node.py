@@ -40,7 +40,6 @@ class ServiceNode(Node):
             self.flag = 0
         else:
             self.flag = 1
-
         x = self.shape_list[1][0][(request.request_goal-1)]
         y = self.shape_list[1][1][(request.request_goal-1)]
         
