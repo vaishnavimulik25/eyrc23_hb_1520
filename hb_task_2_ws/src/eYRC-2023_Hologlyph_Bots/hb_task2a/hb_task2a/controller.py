@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 '''
-*****************************************************************************************
+*******************************
 *
 *        		===============================================
 *           		Hologlyph Bots (HB) Theme (eYRC 2023-24)
@@ -14,7 +14,7 @@
 *  any and all claim(s) that emanate from the use of the Software or 
 *  breach of the terms of this agreement.
 *
-*****************************************************************************************
+*******************************
 '''
 
 
@@ -74,8 +74,8 @@ class HBController(Node):
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
-        self.k_linear = 0.6
-        self.k_angular = 0.9
+        self.k_linear = 0.08
+        self.k_angular = 0.0
         self.v_left = 0.0
         self.v_right = 0.0
         self.v_rear = 0.0
@@ -92,15 +92,21 @@ class HBController(Node):
 
     def aruco_callback(self, msg):
         # Update the position and orientation fromaruco message 
+<<<<<<< HEAD
         D = 22
         P = 50
         c = D/P #conversion factor for pixel to meters 
         self.hb_x = D/2 - msg.x * c # origin shifted
         self.hb_y = D/2 - msg.y * c
         self.hb_theta = msg.theta * c
+=======
+        self.hb_x = msg.x  # origin shifted
+        self.hb_y = msg.y 
+        self.hb_theta = msg.theta 
+>>>>>>> f75df0f (shape is not getting formed but bot is moving)
 
     def distance(self,x,y):
-        return abs(math.sqrt((self.hb_x - x) ** 2 + (self.hb_y - y) ** 2))
+        return abs(math.sqrt((self.hb_x - x) * 2 + (self.hb_y - y) * 2))
     
     def calculate_velocity_commands(self, x, y, th):
         # Calculate Error from feedback
@@ -141,9 +147,9 @@ class HBController(Node):
 
     def inverse_kinematics(self):
         #	Process it further to find what proportions of that effort should be given to 3 individuals wheels !!
-        matrix_3x3 = np.array([[-0.3535,-0.7071,0.3535],[-0.3535,0.7071,0.3535],[0.5,0,0.5]])
+        matrix_3x3 = np.array([[3.0,-5.0,0.0],[3.0,2.5,4.0],[3.0,2.5,-4.0]])
         
-        vector_3x1 = np.array([self.vel_x, self.vel_y, self.vel_theta])
+        vector_3x1 = np.array([self.vel_theta, self.vel_x, self.vel_y])
         result = np.dot(matrix_3x3,vector_3x1)
         self.v_left, self.v_right, self.v_rear = result
 
@@ -172,8 +178,13 @@ def main(args=None):
                         'Service call failed %r' % (e,))
                 else:
                 #########           GOAL POSE             #########
+<<<<<<< HEAD
                     x_goal      = response.x_goal
                     y_goal      = response.y_goal
+=======
+                    x_goal      = response.x_goal + 250
+                    y_goal      = response.y_goal +250
+>>>>>>> f75df0f (shape is not getting formed but bot is moving)
                     theta_goal  = response.theta_goal
                     hb_controller.flag = response.end_of_list
                 ####################################################
