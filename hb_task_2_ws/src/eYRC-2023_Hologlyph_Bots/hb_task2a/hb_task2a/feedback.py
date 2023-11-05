@@ -41,7 +41,7 @@ class ArUcoDetector(Node,CvBridge):
         #convert ROS image to opencv image
         cvb = CvBridge()
         cv_image = cvb.imgmsg_to_cv2(msg,desired_encoding='bgr8')
-        self.get_logger().info("cv image converted")        
+        #self.get_logger().info("cv image converted")        
 
         #Detect Aruco marker
         #NOTE only for reference
@@ -77,7 +77,7 @@ class ArUcoDetector(Node,CvBridge):
         arucoParams = cv2.aruco.DetectorParameters()
         (corners,ids,rejected) = cv2.aruco.detectMarkers(cv_image, arucoDict, parameters=arucoParams)
         
-        self.get_logger().info("aruco detected successfully")        
+        #self.get_logger().info("aruco detected successfully")        
         
         # Publish the bot coordinates to the topic  /detected_aruco
         (x1,y1) = corners[0][0][0][:2]
@@ -94,12 +94,12 @@ class ArUcoDetector(Node,CvBridge):
         coordinates.x = x_centroid
         coordinates.y = y_centroid
         coordinates.theta = theta
-        self.get_logger().info("coordinates of bot got successfully")        
+        #self.get_logger().info("coordinates of bot got successfully")        
         
         #created /detected_aruco topic
         self.aruco_publisher = self.create_publisher(Pose2D,"/detected_aruco",10)
         self.aruco_publisher.publish(coordinates)
-        self.get_logger().info("coordinates published successfully")        
+        #self.get_logger().info("coordinates published successfully")        
 
 def main(args=None):
     rclpy.init(args=args)

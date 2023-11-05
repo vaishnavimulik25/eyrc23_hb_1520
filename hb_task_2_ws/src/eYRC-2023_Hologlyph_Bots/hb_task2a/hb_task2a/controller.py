@@ -87,7 +87,7 @@ class HBController(Node):
         # service ,cli is object representing the client
         self.cli = self.create_client(NextGoal, 'next_goal')      
         #wait until service is not up
-        while not cli.wait_for_service(1.0):
+        while not self.cli.wait_for_service(1.0):
             self.get_logger().warn("Waiting for service...")
         #create a request
         self.req = NextGoal.Request() 
@@ -118,14 +118,14 @@ class HBController(Node):
         self.vel_theta = self.k_angular * theta_error
 
         # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
-        inverse_kinematics()
+        self.inverse_kinematics()
 
         # Apply appropriate force vectors
         self.vel_left_msg.force.y = self.v_left
         self.vel_right_msg.force.y = self.v_right
         self.vel_rear_msg.force.y = self.v_rear
 
-        #Publish velocities respectively  
+        #Publish the calculated efforts to actuate robot by applying force vectors on provided topics
         self.left_pub.publish(self.vel_left_msg)
         self.right_pub.publish(self.vel_right_msg)
         self.rear_pub.publish(self.vel_rear_msg)
@@ -139,7 +139,7 @@ class HBController(Node):
         self.future = self.cli.call_async(self.req)
         
 
-    def inverse_kinematics():
+    def inverse_kinematics(self):
         #	Process it further to find what proportions of that effort should be given to 3 individuals wheels !!
         matrix_3x3 = np.array([[-0.3535,-0.7071,0.3535],[-0.3535,0.7071,0.3535],[0.5,0,0.5]])
         
@@ -147,7 +147,6 @@ class HBController(Node):
         result = np.dot(matrix_3x3,vector_3x1)
         self.v_left, self.v_right, self.v_rear = result
 
-        #	Publish the calculated efforts to actuate robot by applying force vectors on provided topics
 
 
 def main(args=None):
