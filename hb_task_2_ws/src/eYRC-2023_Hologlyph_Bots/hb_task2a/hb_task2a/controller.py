@@ -94,9 +94,10 @@ class HBController(Node):
         self.index = 0
 
     def aruco_callback(self, msg):
-        # Update the position and orientation from the Odometry message
-        self.hb_x = msg.x
-        self.hb_y = msg.y
+        # Update the position and orientation fromaruco message 
+        c = D/P #conversion factor for pixel to meters 
+        self.hb_x = D/2 - msg.x * c # origin shifted
+        self.hb_y = D/2 - msg.y * c
         self.hb_theta = msg.theta
 
     def distance(self,x,y):
