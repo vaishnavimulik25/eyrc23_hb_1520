@@ -60,7 +60,7 @@ def generate_launch_description():
     return LaunchDescription([
         world,
         spwan_bot,
-        feedback_node,
-        controller,
-        service_node
+        #feedback_node,
+        #controller,
+        #service_node
         ])
