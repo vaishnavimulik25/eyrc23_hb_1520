@@ -97,7 +97,7 @@ class ArUcoDetector(Node,CvBridge):
         #created /detected_aruco topic
         self.aruco_publisher = self.create_publisher(Pose2D,"/detected_aruco",10)
         self.aruco_publisher.publish(coordinates)
-        self.get_logger().info("coordinates published successfully")        
+        # self.get_logger().info("coordinates published successfully")        
 
 def main(args=None):
     rclpy.init(args=args)

@@ -45,7 +45,7 @@ import numpy as np
 
 # Initialize Global variables
 
-
+index = 0
 ################# ADD UTILITY FUNCTIONS HERE #################
 
 ##############################################################
@@ -77,7 +77,7 @@ class HBController(Node):
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
-        self.k_linear = 0.6
+        self.k_linear = 0.2
         self.k_angular = 0.9
         self.v_left = 0.0
         self.v_right = 0.0
@@ -166,37 +166,53 @@ def main(args=None):
     hb_controller = HBController()
     
     while rclpy.ok():
-        if hb_controller.cli.wait_for_service(timeout_sec=1.0):
-            future = hb_controller.send_request(hb_controller.index)
-            rclpy.spin_until_future_complete(hb_controller, future)
-        # Check if the service call is done
-            if future.done():
-                try:
-                    # response from the service call of form x,y,theta goal
-                    response = future.result()
-                except Exception as e:
-                    hb_controller.get_logger().info('Service call failed %r' % (e,))
-                else:
-                    hb_controller.get_logger().info('in else')
-                #########           GOAL POSE             #########
-                    x_goal      = response.x_goal
-                    y_goal      = response.y_goal
-                    theta_goal  = response.theta_goal
-                    flag = response.end_of_list
-                ####################################################
+        # if hb_controller.cli.wait_for_service(timeout_sec=1.0):
+        #     future = hb_controller.send_request(hb_controller.index)
+        #     rclpy.spin_until_future_complete(hb_controller, future)
+        # # Check if the service call is done
+        #     if future.done():
+        #         try:
+        #             # response from the service call of form x,y,theta goal
+        #             response = future.result()
+        #         except Exception as e:
+        #             hb_controller.get_logger().info('Service call failed %r' % (e,))
+        #         else:
+        #             hb_controller.get_logger().info('in else')
+        #         #########           GOAL POSE             #########
+        #             x_goal      = response.x_goal
+        #             y_goal      = response.y_goal
+        #             theta_goal  = response.theta_goal
+        #             flag = response.end_of_list
+        #         ####################################################
                 
-                    hb_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
-                # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
-                        
-                ############     DO NOT MODIFY THIS       #########
-                if hb_controller.distance(x_goal,y_goal) < 0.1 :
-                    hb_controller.index += 1
-                    if flag == 1 :
-                        hb_controller.index = 0
+        #             hb_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
+        #         # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
+        
+        #         ############     DO NOT MODIFY THIS       #########
+        #         if hb_controller.distance(x_goal,y_goal) < 0.1 :
+        #             hb_controller.index += 1
+        #             if flag == 1 :
+        #                 hb_controller.index = 0
                 ####################################################
+        
+        # y_goal = [1, 3, -3, 2]
+        
+        # x_goal = y_goal
+        
+        # theta_goal = [1, 1, 2, 3], 
+        
+        x_goal, y_goal, theta_goal = 1, 2, 0
+        hb_controller.calculate_velocity_commands(
+            x_goal, y_goal, theta_goal)
+        if hb_controller.distance(x_goal,y_goal) < 0.1:
+            index+=1
+            if index == 3:
+                index = 0
+
 
         # Spin once to process callbacks
-        rclpy.spin_once(hb_controller)
+        hb_controller.get_logger().info('spin reached')
+        rclpy.spin(hb_controller)
         hb_controller.rate.sleep()
     
     # Destroy the node and shut down ROS
