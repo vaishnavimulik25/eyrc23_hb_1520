@@ -17,7 +17,6 @@
 *****************************************************************************************
 '''
 
-
 # Team ID:		[ Team-ID ]
 # Author List:		[ Names of team members worked on this file separated by Comma: Name1, Name2, ... ]
 # Filename:		feedback.py
@@ -58,9 +57,9 @@ class HBController(Node):
         
         # Initialze Publisher and Subscriber
         self.aruco_subscriber = self.create_subscription(Pose2D,"/detected_aruco",self.aruco_callback,10)
-        # self.left_pub = self.create_publisher(Wrench,'/hb_bot_1/left_wheel_force',10)
-        # self.right_pub = self.create_publisher(Wrench,'/hb_bot_1/right_wheel_force',10)
-        # self.rear_pub = self.create_publisher(Wrench,'/hb_bot_1/rear_wheel_force',10)
+        self.left_pub = self.create_publisher(Wrench,'/hb_bot_1/left_wheel_force',10)
+        self.right_pub = self.create_publisher(Wrench,'/hb_bot_1/right_wheel_force',10)
+        self.rear_pub = self.create_publisher(Wrench,'/hb_bot_1/rear_wheel_force',10)
         self.cmd_vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
 
 
@@ -77,7 +76,7 @@ class HBController(Node):
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
-        self.k_linear = 0.2
+        self.k_linear = 0.6
         self.k_angular = 0.9
         self.v_left = 0.0
         self.v_right = 0.0
@@ -116,30 +115,30 @@ class HBController(Node):
         robot_frame_y_vel = (y_error * math.cos(self.hb_theta)) - (x_error * math.sin(self.hb_theta))
 
         # Calculate the required velocity of bot for the next iteration(s)
-        # self.vel_x = self.k_linear * robot_frame_x_vel
-        # self.vel_y = self.k_linear * robot_frame_y_vel
-        # self.vel_theta = self.k_angular * theta_error
+        self.vel_x = self.k_linear * robot_frame_x_vel
+        self.vel_y = self.k_linear * robot_frame_y_vel
+        self.vel_theta = self.k_angular * theta_error
         
         self.vel_msg.linear.x = self.k_linear * robot_frame_x_vel
         self.vel_msg.linear.y = self.k_linear * robot_frame_y_vel
         self.vel_msg.angular.z = self.k_angular * theta_error
-        self.cmd_vel_pub.publish(self.vel_msg)
+        # self.cmd_vel_pub.publish(self.vel_msg)
         self.get_logger().info('vel publish reached')
 
         # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
-        # self.v_left, self.v_right, self.v_rear = self.inverse_kinematics(
-        #     self.vel_x, self.vel_y, self.vel_theta)
+        self.v_left, self.v_right, self.v_rear = self.inverse_kinematics(
+            self.vel_x, self.vel_y, self.vel_theta)
 
         # Apply appropriate force vectors
-        # self.vel_left_msg.force.y = self.v_left
-        # self.vel_right_msg.force.y = self.v_right
-        # self.vel_rear_msg.force.y = self.v_rear
+        self.vel_left_msg.force.y = self.v_left
+        self.vel_right_msg.force.y = self.v_right
+        self.vel_rear_msg.force.y = self.v_rear
         
 
         #Publish the calculated efforts to actuate robot by applying force vectors on provided topics
-        # self.left_pub.publish(self.vel_left_msg)
-        # self.right_pub.publish(self.vel_right_msg)
-        # self.rear_pub.publish(self.vel_rear_msg)
+        self.left_pub.publish(self.vel_left_msg)
+        self.right_pub.publish(self.vel_right_msg)
+        self.rear_pub.publish(self.vel_rear_msg)
         
     # Method to create a request to the "next_goal" service
     def send_request(self, index):
@@ -166,33 +165,33 @@ def main(args=None):
     hb_controller = HBController()
     
     while rclpy.ok():
-        # if hb_controller.cli.wait_for_service(timeout_sec=1.0):
-        #     future = hb_controller.send_request(hb_controller.index)
-        #     rclpy.spin_until_future_complete(hb_controller, future)
-        # # Check if the service call is done
-        #     if future.done():
-        #         try:
-        #             # response from the service call of form x,y,theta goal
-        #             response = future.result()
-        #         except Exception as e:
-        #             hb_controller.get_logger().info('Service call failed %r' % (e,))
-        #         else:
-        #             hb_controller.get_logger().info('in else')
-        #         #########           GOAL POSE             #########
-        #             x_goal      = response.x_goal
-        #             y_goal      = response.y_goal
-        #             theta_goal  = response.theta_goal
-        #             flag = response.end_of_list
-        #         ####################################################
+        if hb_controller.cli.wait_for_service(timeout_sec=1.0):
+            future = hb_controller.send_request(hb_controller.index)
+            rclpy.spin_until_future_complete(hb_controller, future)
+        # Check if the service call is done
+            if future.done():
+                try:
+                    # response from the service call of form x,y,theta goal
+                    response = future.result()
+                except Exception as e:
+                    hb_controller.get_logger().info('Service call failed %r' % (e,))
+                else:
+                    hb_controller.get_logger().info('in else')
+                #########           GOAL POSE             #########
+                    x_goal      = response.x_goal
+                    y_goal      = response.y_goal
+                    theta_goal  = response.theta_goal
+                    flag = response.end_of_list
+                ####################################################
                 
-        #             hb_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
-        #         # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
+                    hb_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
+                # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
         
-        #         ############     DO NOT MODIFY THIS       #########
-        #         if hb_controller.distance(x_goal,y_goal) < 0.1 :
-        #             hb_controller.index += 1
-        #             if flag == 1 :
-        #                 hb_controller.index = 0
+                ############     DO NOT MODIFY THIS       #########
+                if hb_controller.distance(x_goal,y_goal) < 0.1 :
+                    hb_controller.index += 1
+                    if flag == 1 :
+                        hb_controller.index = 0
                 ####################################################
         
         # y_goal = [1, 3, -3, 2]
@@ -201,13 +200,13 @@ def main(args=None):
         
         # theta_goal = [1, 1, 2, 3], 
         
-        x_goal, y_goal, theta_goal = 1, 2, 0
-        hb_controller.calculate_velocity_commands(
-            x_goal, y_goal, theta_goal)
-        if hb_controller.distance(x_goal,y_goal) < 0.1:
-            index+=1
-            if index == 3:
-                index = 0
+        # x_goal, y_goal, theta_goal = 1, 2, 0
+        # hb_controller.calculate_velocity_commands(
+        #     x_goal, y_goal, theta_goal)
+        # if hb_controller.distance(x_goal,y_goal) < 0.1:
+        #     index+=1
+        #     if index == 3:
+        #         index = 0
 
 
         # Spin once to process callbacks
