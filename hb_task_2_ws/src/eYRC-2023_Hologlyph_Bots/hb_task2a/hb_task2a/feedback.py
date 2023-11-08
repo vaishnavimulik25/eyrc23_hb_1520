@@ -23,7 +23,7 @@ from sensor_msgs.msg import Image
 from geometry_msgs.msg import Pose2D
 import cv2
 import math
-#import argparse
+import argparse
 from cv_bridge import CvBridge #for using cv_bridge for converting ros image to opencv image
 
 # Import the required modules
@@ -41,38 +41,37 @@ class ArUcoDetector(Node,CvBridge):
         #convert ROS image to opencv image
         cvb = CvBridge()
         cv_image = cvb.imgmsg_to_cv2(msg,desired_encoding='bgr8')
-        #self.get_logger().info("cv image converted")        
+        # self.get_logger().info("cv image converted")        
 
         #Detect Aruco marker
         #NOTE only for reference
-       # ap = argparse.ArgumentParser()
-       # ap.add_argument("-t","--type",type=str,default="DICT_ARUCO_ORIGINAL",help="type of Aruco tag to detect")
-       # args = vars(ap.parse_args())
-       # # define names of each possible ArUco tag OpenCV supports
-       # ARUCO_DICT = {
-       # 	"DICT_4X4_50": cv2.aruco.DICT_4X4_50,
-       # 	"DICT_4X4_100": cv2.aruco.DICT_4X4_100,
-       # 	"DICT_4X4_250": cv2.aruco.DICT_4X4_250,
-       # 	"DICT_4X4_1000": cv2.aruco.DICT_4X4_1000,
-       # 	"DICT_5X5_50": cv2.aruco.DICT_5X5_50,
-       # 	"DICT_5X5_100": cv2.aruco.DICT_5X5_100,
-       # 	"DICT_5X5_250": cv2.aruco.DICT_5X5_250,
-       # 	"DICT_5X5_1000": cv2.aruco.DICT_5X5_1000,
-       # 	"DICT_6X6_50": cv2.aruco.DICT_6X6_50,
-       # 	"DICT_6X6_100": cv2.aruco.DICT_6X6_100,
-       # 	"DICT_6X6_250": cv2.aruco.DICT_6X6_250,
-       # 	"DICT_6X6_1000": cv2.aruco.DICT_6X6_1000,
-       # 	"DICT_7X7_50": cv2.aruco.DICT_7X7_50,
-       # 	"DICT_7X7_100": cv2.aruco.DICT_7X7_100,
-       # 	"DICT_7X7_250": cv2.aruco.DICT_7X7_250,
-       # 	"DICT_7X7_1000": cv2.aruco.DICT_7X7_1000,
-       # 	"DICT_ARUCO_ORIGINAL": cv2.aruco.DICT_ARUCO_ORIGINAL,
-       # 	"DICT_APRILTAG_16h5": cv2.aruco.DICT_APRILTAG_16h5,
-       # 	"DICT_APRILTAG_25h9": cv2.aruco.DICT_APRILTAG_25h9,
-       # 	"DICT_APRILTAG_36h10": cv2.aruco.DICT_APRILTAG_36h10,
-       # 	"DICT_APRILTAG_36h11": cv2.aruco.DICT_APRILTAG_36h11
-       # }
-
+        # ap = argparse.ArgumentParser()
+        # ap.add_argument("-t","--type",type=str,default="DICT_ARUCO_ORIGINAL",help="type of Aruco tag to detect")
+        # args = vars(ap.parse_args())
+        # # define names of each possible ArUco tag OpenCV supports
+        # ARUCO_DICT = {
+        # 	"DICT_4X4_50": cv2.aruco.DICT_4X4_50,
+        # 	"DICT_4X4_100": cv2.aruco.DICT_4X4_100,
+        # 	"DICT_4X4_250": cv2.aruco.DICT_4X4_250,
+        # 	"DICT_4X4_1000": cv2.aruco.DICT_4X4_1000,
+        # 	"DICT_5X5_50": cv2.aruco.DICT_5X5_50,
+        # 	"DICT_5X5_100": cv2.aruco.DICT_5X5_100,
+        # 	"DICT_5X5_250": cv2.aruco.DICT_5X5_250,
+        # 	"DICT_5X5_1000": cv2.aruco.DICT_5X5_1000,
+        # 	"DICT_6X6_50": cv2.aruco.DICT_6X6_50,
+        # 	"DICT_6X6_100": cv2.aruco.DICT_6X6_100,
+        # 	"DICT_6X6_250": cv2.aruco.DICT_6X6_250,
+        # 	"DICT_6X6_1000": cv2.aruco.DICT_6X6_1000,
+        # 	"DICT_7X7_50": cv2.aruco.DICT_7X7_50,
+        # 	"DICT_7X7_100": cv2.aruco.DICT_7X7_100,
+        # 	"DICT_7X7_250": cv2.aruco.DICT_7X7_250,
+        # 	"DICT_7X7_1000": cv2.aruco.DICT_7X7_1000,
+        # 	"DICT_ARUCO_ORIGINAL": cv2.aruco.DICT_ARUCO_ORIGINAL,
+        # 	"DICT_APRILTAG_16h5": cv2.aruco.DICT_APRILTAG_16h5,
+        # 	"DICT_APRILTAG_25h9": cv2.aruco.DICT_APRILTAG_25h9,
+        # 	"DICT_APRILTAG_36h10": cv2.aruco.DICT_APRILTAG_36h10,
+        # 	"DICT_APRILTAG_36h11": cv2.aruco.DICT_APRILTAG_36h11
+        # }
         arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
         arucoParams = cv2.aruco.DetectorParameters()
         (corners,ids,rejected) = cv2.aruco.detectMarkers(cv_image, arucoDict, parameters=arucoParams)
@@ -84,7 +83,7 @@ class ArUcoDetector(Node,CvBridge):
         (x2,y2) = corners[0][0][1][:2]
         (x3,y3) = corners[0][0][2][:2]
         (x4,y4) = corners[0][0][3][:2]
-       
+        
         x_centroid = (x1 + x2 + x3 + x4)/4
         y_centroid = (y1 + y2 + y3 + y4)/4
         theta = math.atan(y_centroid/x_centroid)
@@ -94,20 +93,16 @@ class ArUcoDetector(Node,CvBridge):
         coordinates.x = x_centroid
         coordinates.y = y_centroid
         coordinates.theta = theta
-        #self.get_logger().info("coordinates of bot got successfully")        
         
         #created /detected_aruco topic
         self.aruco_publisher = self.create_publisher(Pose2D,"/detected_aruco",10)
         self.aruco_publisher.publish(coordinates)
-        #self.get_logger().info("coordinates published successfully")        
+        self.get_logger().info("coordinates published successfully")        
 
 def main(args=None):
     rclpy.init(args=args)
-
     aruco_detector = ArUcoDetector()
-
     rclpy.spin(aruco_detector)
-
     aruco_detector.destroy_node()
     rclpy.shutdown()
 
