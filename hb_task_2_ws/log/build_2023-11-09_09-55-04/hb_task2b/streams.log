@@ -1,0 +1,22 @@
+[1.895s] Invoking command in '/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/src/eYRC-2023_Hologlyph_Bots/hb_task2b': PYTHONPATH=/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_task2b/prefix_override:/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_task2b/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../../build/hb_task2b build --build-base /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_task2b/build install --record /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_task2b/install.log --single-version-externally-managed
+[2.407s] running egg_info
+[2.408s] writing ../../../build/hb_task2b/hb_task2b.egg-info/PKG-INFO
+[2.409s] writing dependency_links to ../../../build/hb_task2b/hb_task2b.egg-info/dependency_links.txt
+[2.409s] writing entry points to ../../../build/hb_task2b/hb_task2b.egg-info/entry_points.txt
+[2.409s] writing requirements to ../../../build/hb_task2b/hb_task2b.egg-info/requires.txt
+[2.410s] writing top-level names to ../../../build/hb_task2b/hb_task2b.egg-info/top_level.txt
+[2.414s] reading manifest file '../../../build/hb_task2b/hb_task2b.egg-info/SOURCES.txt'
+[2.416s] writing manifest file '../../../build/hb_task2b/hb_task2b.egg-info/SOURCES.txt'
+[2.416s] running build
+[2.416s] running build_py
+[2.417s] running install
+[2.417s] running install_lib
+[2.420s] running install_data
+[2.421s] running install_egg_info
+[2.424s] removing '/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_task2b/lib/python3.10/site-packages/hb_task2b-0.0.0-py3.10.egg-info' (and everything under it)
+[2.425s] Copying ../../../build/hb_task2b/hb_task2b.egg-info to /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_task2b/lib/python3.10/site-packages/hb_task2b-0.0.0-py3.10.egg-info
+[2.426s] running install_scripts
+[2.464s] Installing controller script to /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_task2b/lib/hb_task2b
+[2.465s] Installing nextgoalpub= hb_task2b.nextGoalPub:mainfeedback script to /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_task2b/lib/hb_task2b
+[2.466s] writing list of installed files to '/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_task2b/install.log'
+[2.935s] Invoked command in '/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/src/eYRC-2023_Hologlyph_Bots/hb_task2b' returned '0': PYTHONPATH=/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_task2b/prefix_override:/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_task2b/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../../build/hb_task2b build --build-base /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_task2b/build install --record /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_task2b/install.log --single-version-externally-managed

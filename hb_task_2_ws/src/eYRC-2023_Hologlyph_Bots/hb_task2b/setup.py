@@ -27,6 +27,7 @@ setup(
         'console_scripts': [
              'controller = hb_task2b.bot_controller:main',
              'nextgoalpub= hb_task2b.nextGoalPub:main'
+             'feedback = hb_task2b.feedback:main'
 
          ],
     },
