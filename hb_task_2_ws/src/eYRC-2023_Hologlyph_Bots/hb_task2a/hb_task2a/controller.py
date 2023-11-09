@@ -180,19 +180,19 @@ def main(args=None):
                 #x_goal = 0
                 #y_goal = 0
                 # Apply appropriate force vectors
-            hb_controller.vel_left_msg.force.y = 20.0
-            hb_controller.vel_right_msg.force.y = 20.0
-            hb_controller.vel_rear_msg.force.y = -20.0
+            hb_controller.vel_left_msg.force.y = -25.0
+            hb_controller.vel_right_msg.force.y = 32.5
+            hb_controller.vel_rear_msg.force.y = -7.5
                 
                 #Publish the calculated efforts to actuate robot by applying force vectors on provided topics
             hb_controller.left_pub.publish(hb_controller.vel_left_msg)
             hb_controller.right_pub.publish(hb_controller.vel_right_msg)
             hb_controller.rear_pub.publish(hb_controller.vel_rear_msg)
             #hb_controller.get_logger().info("force 0 given")
-            while 0 < hb_controller.distance(x_goal,y_goal) < 10 :
-                hb_controller.vel_left_msg.force.y = -20.0
-                hb_controller.vel_right_msg.force.y = -20.0
-                hb_controller.vel_rear_msg.force.y = 20.0
+            while hb_controller.distance(x_goal,y_goal) < 10 :
+                hb_controller.vel_left_msg.force.y = 0
+                hb_controller.vel_right_msg.force.y = 0
+                hb_controller.vel_rear_msg.force.y = 0
                     
                     #Publish the calculated efforts to actuate robot by applying force vectors on provided topics
                 hb_controller.left_pub.publish(hb_controller.vel_left_msg)

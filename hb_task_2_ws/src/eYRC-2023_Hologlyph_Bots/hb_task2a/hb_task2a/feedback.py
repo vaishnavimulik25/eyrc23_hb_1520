@@ -133,7 +133,7 @@ class ArUcoDetector(Node,CvBridge):
         
         x_centroid = (x1 + x2 + x3 + x4)/4
         y_centroid = (y1 + y2 + y3 + y4)/4
-        theta = math.atan(y_centroid/x_centroid)
+        theta = 0.0
         
         # print("[INFO] ArUco marker ID: {}".format(markerID)," at (", x_centroid, ",", y_centroid)
         
