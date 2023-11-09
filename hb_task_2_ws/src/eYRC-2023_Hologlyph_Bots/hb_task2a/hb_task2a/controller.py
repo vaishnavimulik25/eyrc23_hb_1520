@@ -148,8 +148,8 @@ class HBController(Node):
 def main(args=None):
     rclpy.init(args=args)
     hb_controller = HBController()
-    x_goal = 100
-    y_goal = 100
+    x_goal = 150
+    y_goal = 150
     theta_goal = 0.78
     while rclpy.ok():
         while x_goal != 0 and y_goal != 0: 
@@ -188,7 +188,20 @@ def main(args=None):
             hb_controller.left_pub.publish(hb_controller.vel_left_msg)
             hb_controller.right_pub.publish(hb_controller.vel_right_msg)
             hb_controller.rear_pub.publish(hb_controller.vel_rear_msg)
-            hb_controller.get_logger().info("force 0 given")
+            #hb_controller.get_logger().info("force 0 given")
+            while 0 < hb_controller.distance(x_goal,y_goal) < 10 :
+                hb_controller.vel_left_msg.force.y = -20.0
+                hb_controller.vel_right_msg.force.y = -20.0
+                hb_controller.vel_rear_msg.force.y = 20.0
+                    
+                    #Publish the calculated efforts to actuate robot by applying force vectors on provided topics
+                hb_controller.left_pub.publish(hb_controller.vel_left_msg)
+                hb_controller.right_pub.publish(hb_controller.vel_right_msg)
+                hb_controller.rear_pub.publish(hb_controller.vel_rear_msg)
+                hb_controller.get_logger().info("force 0 given")
+                #x_goal = 0
+                #y_goal = 0
+                # Apply appropriate force vectors
                     #hb_controller.index += 1
                         #if flag == 1 :
                         #hb_controller.index = 0
