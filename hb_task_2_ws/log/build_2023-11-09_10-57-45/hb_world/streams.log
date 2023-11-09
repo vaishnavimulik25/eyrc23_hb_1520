@@ -1,0 +1,79 @@
+[0.533s] Invoking command in '/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/src/eYRC-2023_Hologlyph_Bots/hb_world -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world
+[0.602s] -- The C compiler identification is GNU 11.4.0
+[0.688s] -- The CXX compiler identification is GNU 11.4.0
+[0.698s] -- Detecting C compiler ABI info
+[0.794s] -- Detecting C compiler ABI info - done
+[0.814s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.814s] -- Detecting C compile features
+[0.815s] -- Detecting C compile features - done
+[0.823s] -- Detecting CXX compiler ABI info
+[0.940s] -- Detecting CXX compiler ABI info - done
+[0.959s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.959s] -- Detecting CXX compile features
+[0.960s] -- Detecting CXX compile features - done
+[0.964s] -- Found ament_cmake: 1.3.5 (/opt/ros/humble/share/ament_cmake/cmake)
+[1.216s] -- Found Python3: /usr/bin/python3.10 (found version "3.10.12") found components: Interpreter 
+[1.311s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[1.355s] -- Found rclcpp: 16.0.6 (/opt/ros/humble/share/rclcpp/cmake)
+[1.414s] -- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[1.421s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[1.433s] -- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[1.454s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.480s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.573s] -- Found rmw_implementation_cmake: 6.1.1 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[1.576s] -- Found rmw_fastrtps_cpp: 6.2.4 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[1.714s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[1.765s] -- Found FastRTPS: /opt/ros/humble/include  
+[1.836s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.852s] -- Looking for pthread.h
+[1.957s] -- Looking for pthread.h - found
+[1.957s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[2.064s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[2.066s] -- Found Threads: TRUE  
+[2.310s] -- Found rclpy: 3.3.10 (/opt/ros/humble/share/rclpy/cmake)
+[2.311s] -- Found urdf: 2.6.0 (/opt/ros/humble/share/urdf/cmake)
+[2.366s] -- Found xacro: 2.0.8 (/opt/ros/humble/share/xacro/cmake)
+[2.368s] -- Found ament_lint_auto: 0.12.8 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[2.482s] -- Added test 'flake8' to check Python code syntax and style conventions
+[2.483s] -- Added test 'lint_cmake' to check CMake code style
+[2.483s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[2.485s] -- Added test 'xmllint' to check XML markup files
+[2.487s] -- Configuring done
+[2.492s] -- Generating done
+[2.494s] -- Build files have been written to: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world
+[2.507s] Invoked command in '/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/src/eYRC-2023_Hologlyph_Bots/hb_world -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world
+[2.510s] Invoking command in '/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world -- -j8 -l8
+[2.570s] Invoked command in '/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world -- -j8 -l8
+[2.603s] Invoking command in '/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world
+[2.616s] -- Install configuration: ""
+[2.616s] -- Execute custom install script
+[2.616s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//launch/world.launch.py
+[2.631s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//worlds/gazebo.world
+[2.645s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/arena/meshes/arena.dae
+[2.657s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/arena/meshes/arena.jpg
+[2.669s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/arena/model.config
+[2.680s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/arena/model.sdf
+[2.691s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/e_camera/meshes/17eyantra_logo_large e.png
+[2.703s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/e_camera/meshes/camera.dae
+[2.715s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/e_camera/model.config
+[2.729s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/e_camera/model.sdf
+[2.743s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/ground_surface/meshes/geoglyph.jpg
+[2.756s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/ground_surface/meshes/ground_surface.dae
+[2.769s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/ground_surface/model.config
+[2.782s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world//models/ground_surface/model.sdf
+[2.793s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/ament_index/resource_index/package_run_dependencies/hb_world
+[2.804s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/ament_index/resource_index/parent_prefix_path/hb_world
+[2.817s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/environment/ament_prefix_path.sh
+[2.832s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/environment/ament_prefix_path.dsv
+[2.846s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/environment/path.sh
+[2.860s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/environment/path.dsv
+[2.873s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/local_setup.bash
+[2.891s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/local_setup.sh
+[2.908s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/local_setup.zsh
+[2.929s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/local_setup.dsv
+[2.948s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/package.dsv
+[2.969s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/ament_index/resource_index/packages/hb_world
+[2.984s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/cmake/hb_worldConfig.cmake
+[3.001s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/cmake/hb_worldConfig-version.cmake
+[3.016s] -- Symlinking: /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/install/hb_world/share/hb_world/package.xml
+[3.034s] Invoked command in '/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world

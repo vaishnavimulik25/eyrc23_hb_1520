@@ -1,2 +1,1 @@
-source;share/hb_world/environment/ament_prefix_path.sh
-source;share/hb_world/environment/path.sh
+/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/ament_cmake_environment_hooks/local_setup.dsv

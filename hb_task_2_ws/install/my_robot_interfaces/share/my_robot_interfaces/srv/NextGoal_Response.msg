@@ -1,5 +1,1 @@
-
-float64 x_goal
-float64 y_goal
-float64 theta_goal
-int64 end_of_list
+/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/my_robot_interfaces/rosidl_cmake/srv/NextGoal_Response.msg

@@ -1,8 +1,1 @@
-msg/Goal.idl
-msg/Goal.msg
-msg/Shape.idl
-msg/Shape.msg
-srv/NextGoal.idl
-srv/NextGoal.srv
-srv/NextGoal_Request.msg
-srv/NextGoal_Response.msg
+/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/my_robot_interfaces/ament_cmake_index/share/ament_index/resource_index/rosidl_interfaces/my_robot_interfaces

@@ -1,12 +1,1 @@
-// generated from rosidl_generator_c/resource/idl.h.em
-// with input from my_robot_interfaces:srv/NextGoal.idl
-// generated code does not contain a copyright notice
-
-#ifndef MY_ROBOT_INTERFACES__SRV__NEXT_GOAL_H_
-#define MY_ROBOT_INTERFACES__SRV__NEXT_GOAL_H_
-
-#include "my_robot_interfaces/srv/detail/next_goal__struct.h"
-#include "my_robot_interfaces/srv/detail/next_goal__functions.h"
-#include "my_robot_interfaces/srv/detail/next_goal__type_support.h"
-
-#endif  // MY_ROBOT_INTERFACES__SRV__NEXT_GOAL_H_
+/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/my_robot_interfaces/rosidl_generator_c/my_robot_interfaces/srv/next_goal.h

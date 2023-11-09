@@ -136,9 +136,11 @@ class HBController(Node):
     def inverse_kinematics(self, x,y,theta):
         #	Process it further to find what proportions of that effort should be given to 3 individuals wheels !!
         #matrix_3x3 = np.array([[-2.775, -4.8063, 3.774],[-2.775,4.8063,3.774],[5.55, 0.0, 3.774]])
-        #matrix_3x3 = np.array([[-1.0, -1.0, 1.0],[-1.0,1.0,1.0],[1.0, 0.0, 1.0]])
-        matrix_3x3 = np.array([[-0.35, -0.701, 0.35],[-0.35,0.701,0.35],[0.5,0.0, 0.5]])
-        vector_3x1 = np.array([x , y, theta])
+        #matrix_3x3 = np.array([[-1.0, 1.0, 0.0],[-1.0,-0.5,-0.8],[-1.0, -0.5,0.8]])
+        #matrix_3x3 = np.array([[-5.0, 5.0, 0.0],[-5.0,-5.5,-4.0],[-5.0,-2.5,4.0]])
+        matrix_3x3 = np.array([[-0.0, 0.0, 0.0],[-0.0,-0.0,-0.0],[-0.0,-0.0,0.0]])
+        #matrix_3x3 = np.array([[-0.35, -0.701, 0.35],[-0.35,0.701,0.35],[0.5,0.0, 0.5]])
+        vector_3x1 = np.array([x,y,theta])
         
         result = np.matmul(matrix_3x3,vector_3x1)
         return result
@@ -170,23 +172,23 @@ def main(args=None):
                     #flag = response.end_of_list
                 ####################################################
                 
-            hb_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
+            #hb_controller.calculate_velocity_commands(x_goal,y_goal,theta_goal)
                 # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
         
                 ############     DO NOT MODIFY THIS       #########
-            while hb_controller.distance(x_goal,y_goal) < 100 :
-                x_goal = 0
-                y_goal = 0
+            #while hb_controller.distance(x_goal,y_goal) < 100 :
+                #x_goal = 0
+                #y_goal = 0
                 # Apply appropriate force vectors
-                self.vel_left_msg.force.y = 0.0
-                self.vel_right_msg.force.y = 0.0
-                self.vel_rear_msg.force.y = 0.0
+            hb_controller.vel_left_msg.force.y = 20.0
+            hb_controller.vel_right_msg.force.y = 20.0
+            hb_controller.vel_rear_msg.force.y = -20.0
                 
                 #Publish the calculated efforts to actuate robot by applying force vectors on provided topics
-                self.left_pub.publish(self.vel_left_msg)
-                self.right_pub.publish(self.vel_right_msg)
-                self.rear_pub.publish(self.vel_rear_msg)
-                self.get_logger().info("force 0 given")
+            hb_controller.left_pub.publish(hb_controller.vel_left_msg)
+            hb_controller.right_pub.publish(hb_controller.vel_right_msg)
+            hb_controller.rear_pub.publish(hb_controller.vel_rear_msg)
+            hb_controller.get_logger().info("force 0 given")
                     #hb_controller.index += 1
                         #if flag == 1 :
                         #hb_controller.index = 0

@@ -1,18 +1,1 @@
-// generated from rosidl_adapter/resource/msg.idl.em
-// with input from my_robot_interfaces/msg/Goal.msg
-// generated code does not contain a copyright notice
-
-
-module my_robot_interfaces {
-  module msg {
-    struct Goal {
-      int64 bot_id;
-
-      sequence<double> x;
-
-      sequence<double> y;
-
-      double theta;
-    };
-  };
-};
+/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/my_robot_interfaces/rosidl_adapter/my_robot_interfaces/msg/Goal.idl
