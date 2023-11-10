@@ -74,7 +74,7 @@ class HBController(Node):
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
-        self.k_linear = 0.08
+        self.k_linear = 0.1
         self.k_angular = 0.0
         self.v_left = 0.0
         self.v_right = 0.0
@@ -106,7 +106,7 @@ class HBController(Node):
 >>>>>>> f75df0f (shape is not getting formed but bot is moving)
 
     def distance(self,x,y):
-        return abs(math.sqrt((self.hb_x - x) * 2 + (self.hb_y - y) * 2))
+        return abs(math.sqrt((self.hb_x - x)**2 + (self.hb_y - y)**2))
     
     def calculate_velocity_commands(self, x, y, th):
         # Calculate Error from feedback
@@ -147,9 +147,9 @@ class HBController(Node):
 
     def inverse_kinematics(self):
         #	Process it further to find what proportions of that effort should be given to 3 individuals wheels !!
-        matrix_3x3 = np.array([[3.0,-5.0,0.0],[3.0,2.5,4.0],[3.0,2.5,-4.0]])
-        
-        vector_3x1 = np.array([self.vel_theta, self.vel_x, self.vel_y])
+        matrix_3x3 = -np.array([[7.145919679862797, -12.376237623762377,-4.8615170766646765],[7.145919679862797, 12.376237623762377,-4.8615170766646765],[-14.291839, 0.0, -4.861517076]])
+
+        vector_3x1 = np.array([self.vel_x, self.vel_y, self.vel_theta])
         result = np.dot(matrix_3x3,vector_3x1)
         self.v_left, self.v_right, self.v_rear = result
 
@@ -178,13 +178,8 @@ def main(args=None):
                         'Service call failed %r' % (e,))
                 else:
                 #########           GOAL POSE             #########
-<<<<<<< HEAD
-                    x_goal      = response.x_goal
-                    y_goal      = response.y_goal
-=======
                     x_goal      = response.x_goal + 250
                     y_goal      = response.y_goal +250
->>>>>>> f75df0f (shape is not getting formed but bot is moving)
                     theta_goal  = response.theta_goal
                     hb_controller.flag = response.end_of_list
                 ####################################################
@@ -194,12 +189,15 @@ def main(args=None):
                 # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
                         
                 ############     DO NOT MODIFY THIS       #########
-                if hb_controller.distance(x_goal,y_goal) < 0.1 :
+                if hb_controller.distance(x_goal,y_goal) < 10 :
                     hb_controller.index += 1
                     if hb_controller.flag == 1 :
                         hb_controller.index = 0
+                    hb_controller.get_logger().info("goal reached")
                 ####################################################
 
+                
+                hb_controller.get_logger().info("done")
         # Spin once to process callbacks
         rclpy.spin_once(hb_controller)
         hb_controller.rate.sleep()

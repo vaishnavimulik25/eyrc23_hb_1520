@@ -28,6 +28,7 @@ from cv_bridge import CvBridge #for using cv_bridge for converting ros image to 
 
 # Import the required modules
 ##############################################################
+
 class ArUcoDetector(Node,CvBridge):
 
     def __init__(self):
@@ -35,6 +36,10 @@ class ArUcoDetector(Node,CvBridge):
         
         # Subscribe the topic /camera/image_raw
         self.camera_subscriber = self.create_subscription(Image,"/camera/image_raw",self.image_callback,10)
+        self.x_centroid = 0.0
+        self.y_centroid = 0.0
+        self.theta = 0.0
+        self.coordinates = Pose2D()
 
     def image_callback(self, msg):
         
@@ -76,17 +81,32 @@ class ArUcoDetector(Node,CvBridge):
         arucoParams = cv2.aruco.DetectorParameters()
         (corners,ids,rejected) = cv2.aruco.detectMarkers(cv_image, arucoDict, parameters=arucoParams)
         corner_copy = corners
+        for (corner,ID) in zip(corners,ids):
+            if ID == 1:
+                (x1,y1) = corner[0][0][:2]
+                (x2,y2) = corner[0][1][:2]
+                (x3,y3) = corner[0][2][:2]
+                (x4,y4) = corner[0][3][:2]
+                self.x_centroid = (x1 + x2 + x3 + x4)/4
+                self.y_centroid = (y1 + y2 + y3 + y4)/4
+                self.theta = 0.0
+                
+                self.coordinates.x = self.x_centroid
+                self.coordinates.y = self.y_centroid
+                self.coordinates.theta = self.theta
+                #self.get_logger().info("coordinates given")
+        
         
         if len(corners) > 0:
             # flatten the ArUco IDs list
             ids = ids.flatten()
             # loop over the detected ArUCo corners
             for (markerCorner, markerID) in zip(corners, ids):
-                # extract the marker corners (which are always returned in
-                # top-left, top-right, bottom-right, and bottom-left order)
+                #extract the marker corners (which are always returned in
+                #top-left, top-right, bottom-right, and bottom-left order)
                 corners = markerCorner.reshape((4, 2))
                 (topLeft, topRight, bottomRight, bottomLeft) = corners
-                # convert each of the (x, y)-coordinate pairs to integers
+                #convert each of the (x, y)-coordinate pairs to integers
                 topRight = (int(topRight[0]), int(topRight[1]))
                 bottomRight = (int(bottomRight[0]), int(bottomRight[1]))
                 bottomLeft = (int(bottomLeft[0]), int(bottomLeft[1]))
@@ -97,51 +117,50 @@ class ArUcoDetector(Node,CvBridge):
                 cv2.line(cv_image, topRight, bottomRight, (0, 255, 0), 2)
                 cv2.line(cv_image, bottomRight, bottomLeft, (0, 255, 0), 2)
                 cv2.line(cv_image, bottomLeft, topLeft, (0, 255, 0), 2)
-                # compute and draw the center (x, y)-coordinates of the ArUco
-                # marker
+                # compute and draw the center (x, y)-coordinates of the ArUcomarker
                 cX = int((topLeft[0] + bottomRight[0]) / 2.0)
                 cY = int((topLeft[1] + bottomRight[1]) / 2.0)
                 cv2.circle(cv_image, (cX, cY), 4, (0, 0, 255), -1)
                 # draw the ArUco marker ID on the image
-                cv2.putText(cv_image, str(markerID),
-                    (topLeft[0], topLeft[1] - 15), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5, (0, 255, 0), 2)
-                # if markerID == 1:
-                #     (x1, y1) = topLeft[0], topLeft[1]
-                #     (x2, y2) = topRight[0], topRight[1]
-                #     (x3, y3) = bottomRight[0], bottomRight[1]
-                #     (x4, y4) = bottomLeft[0], bottomLeft[1]
-                # else:
-                #     (x1, y1) = 1, 1
-                #     (x2, y2) = 1, 1
-                #     (x3, y3) = 1, 1
-                #     (x4, y4) = 1, 1
-                
-                
+                cv2.putText(cv_image, str(markerID),(topLeft[0], topLeft[1] - 15), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)
         
+        cv2.waitKey(1)
+        cv2.putText(cv_image, str(self.coordinates.x),
+        (250,250), cv2.FONT_HERSHEY_SIMPLEX,
+        0.5, (0, 255, 0), 2)
+        cv2.putText(cv_image, str(self.coordinates.y),
+        (250, 270), cv2.FONT_HERSHEY_SIMPLEX,
+        0.5, (0, 255, 0), 2)
+        
+        #created /detected_aruco topic
+        self.aruco_publisher = self.create_publisher(Pose2D,"/detected_aruco",10)
+        self.aruco_publisher.publish(self.coordinates)
+        #self.get_logger().info("coordinates published successfully")        
+        cv2.imshow("Camera output resized", cv_image)
         
         
         #self.get_logger().info("aruco detected successfully")        
-        cv2.waitKey(1)
-        # Publish the bot coordinates to the topic  /detected_aruco
-        (x1,y1) = corner_copy[1][0][0][:2]
-        (x2,y2) = corner_copy[1][0][1][:2]
-        (x3,y3) = corner_copy[1][0][2][:2]
-        (x4,y4) = corner_copy[1][0][3][:2]
+      #  cv2.waitKey(1)
+      #  # Publish the bot coordinates to the topic  /detected_aruco
+      #  
+      #  (x1,y1) = corner_copy[1][0][0][:2]
+      #  (x2,y2) = corner_copy[1][0][1][:2]
+      #  (x3,y3) = corner_copy[1][0][2][:2]
+      #  (x4,y4) = corner_copy[1][0][3][:2]
         
         
         
-        x_centroid = (x1 + x2 + x3 + x4)/4
-        y_centroid = (y1 + y2 + y3 + y4)/4
-        theta = 0.0
+      #  x_centroid = (x1 + x2 + x3 + x4)/4
+      #  y_centroid = (y1 + y2 + y3 + y4)/4
+      #  theta = 0.0
         
         # print("[INFO] ArUco marker ID: {}".format(markerID)," at (", x_centroid, ",", y_centroid)
         
         #coordinates to be converted in msg type Pose2D 
-        coordinates = Pose2D()
-        coordinates.x = x_centroid
-        coordinates.y = y_centroid
-        coordinates.theta = theta
+      #  coordinates = Pose2D()
+      #  coordinates.x = x_centroid
+      #  coordinates.y = y_centroid
+      #  coordinates.theta = theta
         
         # D = 3
         # P = 500
@@ -149,18 +168,18 @@ class ArUcoDetector(Node,CvBridge):
         # hb_x = D/2 - coordinates.x * c  # origin shifted
         # hb_y = D/2 - coordinates.y * c
         # hb_theta = coordinates.theta * c
-        cv2.putText(cv_image, str(coordinates.x),
-        (250,250), cv2.FONT_HERSHEY_SIMPLEX,
-        0.5, (0, 255, 0), 2)
-        cv2.putText(cv_image, str(coordinates.y),
-        (250, 270), cv2.FONT_HERSHEY_SIMPLEX,
-        0.5, (0, 255, 0), 2)
-        
-        #created /detected_aruco topic
-        self.aruco_publisher = self.create_publisher(Pose2D,"/detected_aruco",10)
-        self.aruco_publisher.publish(coordinates)
-        # self.get_logger().info("coordinates published successfully")        
-        cv2.imshow("Camera output resized", cv_image)
+     #   cv2.putText(cv_image, str(coordinates.x),
+     #   (250,250), cv2.FONT_HERSHEY_SIMPLEX,
+     #   0.5, (0, 255, 0), 2)
+     #   cv2.putText(cv_image, str(coordinates.y),
+     #   (250, 270), cv2.FONT_HERSHEY_SIMPLEX,
+     #   0.5, (0, 255, 0), 2)
+     #   
+     #   #created /detected_aruco topic
+     #   self.aruco_publisher = self.create_publisher(Pose2D,"/detected_aruco",10)
+     #   self.aruco_publisher.publish(coordinates)
+     #   # self.get_logger().info("coordinates published successfully")        
+     #   cv2.imshow("Camera output resized", cv_image)
 
 def main(args=None):
     rclpy.init(args=args)
