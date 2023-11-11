@@ -42,6 +42,7 @@ class ArUcoDetector(Node, CvBridge):
         self.y_centroid = 0.0
         self.theta = 0.0
         self.coordinates = Pose2D()
+        self.points = []
 
 
     def image_callback(self, msg):
@@ -98,6 +99,9 @@ class ArUcoDetector(Node, CvBridge):
                 self.coordinates.x = self.x_centroid
                 self.coordinates.y = self.y_centroid
                 self.coordinates.theta = self.theta
+                if len(self.points) <= 536870910:
+                    self.points.append((int(self.x_centroid),int(self.y_centroid)))
+                    self.get_logger().info("list made")
                 # self.get_logger().info("coordinates given")
 
         if len(corners) > 0:
@@ -128,6 +132,13 @@ class ArUcoDetector(Node, CvBridge):
                 cv2.putText(cv_image, str(
                     markerID), (topLeft[0], topLeft[1] - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
+                if len(self.points) >=10:
+                    while len(self.points) > 10:
+                        cv2.line(cv_image,self.points[0],self.points[9],(0,255,0),5)
+                        self.points.pop(0)
+                        self.get_logger().info("hellodanke")
+                        if len(self.points) < 10:
+                            self.get_logger().info("hi")
         cv2.waitKey(1)
         cv2.putText(cv_image, str(self.coordinates.x),
                     (250, 250), cv2.FONT_HERSHEY_SIMPLEX,

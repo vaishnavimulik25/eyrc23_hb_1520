@@ -1,9 +1,0 @@
-/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/CMakeFiles/uninstall.dir
-/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/CMakeFiles/hb_world_uninstall.dir
-/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/CMakeFiles/test.dir
-/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/CMakeFiles/edit_cache.dir
-/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/CMakeFiles/rebuild_cache.dir
-/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/CMakeFiles/list_install_components.dir
-/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/CMakeFiles/install.dir
-/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/CMakeFiles/install/local.dir
-/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/CMakeFiles/install/strip.dir

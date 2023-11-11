@@ -67,7 +67,6 @@ class HBController(Node):
         self.rear_pub = self.create_publisher(
             Wrench, '/hb_bot_1/rear_wheel_force', 10)
 
-        self.camera_subscriber = self.create_subscription(Image, "/camera/image_raw", self.image_callback, 10)
         # For maintaining control loop rate.
         self.rate = self.create_rate(100)
 
@@ -88,28 +87,19 @@ class HBController(Node):
         self.vel_x = 0.0
         self.vel_y = 0.0
         self.vel_theta = 0.0
-        self.points = []
         # client for the "next_goal" service ie provide type and name of the
         # service ,cli is object representing the client
         self.cli = self.create_client(NextGoal, 'next_goal')
         # create a request
         self.req = NextGoal.Request()
         self.index = 0
-        self.cvb = 0
-        self.cv_image = 0
 
-    def image_callback(self,msg): 
-        self.cvb = CvBridge()
-        self.cv_image = self.cvb.imgmsg_to_cv2(msg, desired_encoding='bgr8')
 
     def aruco_callback(self, msg):
         # Update the position and orientation fromaruco message
         self.hb_x = msg.x  # origin shifted
         self.hb_y = msg.y
         self.hb_theta = 0
-        if len(self.points) <= 536870910:
-            self.points.append((int(self.hb_x),int(self.hb_y)))
-            self.get_logger().info("list made")
 
     def distance(self, x, y):
         return abs(math.sqrt((self.hb_x - x)**2 + (self.hb_y - y)**2))
@@ -210,14 +200,6 @@ def main(args=None):
                             hb_controller.index = 0
                             hb_controller.get_logger().info("nextt goal comming")
                         hb_controller.get_logger().info("goal reached")
-                        if len(hb_controller.points) >=10:
-                            i = 0
-                            while len(hb_controller.points) > 100:
-                                cv2.line(hb_controller.cv_image,hb_controller.points[0],hb_controller.points[5],(0,255,0),5)
-                                hb_controller.points.pop(0)
-                                hb_controller.get_logger().info("hellodanke")
-                            if len(hb_controller.points) < 10:
-                                hb_controller.get_logger().info("hi")
                 ####################################################
 
                 hb_controller.get_logger().info("done")

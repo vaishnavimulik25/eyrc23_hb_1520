@@ -1,2 +1,0 @@
-float64 shape_dimension
-float64 shape_theta

@@ -1,1 +1,0 @@
-/home/vaishnavi/eyrc23_hb_1520/hb_task_2_ws/build/hb_world/ament_cmake_environment_hooks/local_setup.zsh
