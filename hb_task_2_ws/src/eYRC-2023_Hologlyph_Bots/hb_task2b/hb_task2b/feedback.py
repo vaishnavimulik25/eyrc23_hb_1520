@@ -72,7 +72,7 @@ class ArUcoDetector(Node,CvBridge):
                 self.x_centroid,self.y_centroid = [(x1 + x2 + x3 + x4)/2,(y1 + y2 + y3 + y4)/2]
                 self.xrm_centroid,self.yrm_centroid = [(x3 + x4)/2,(y3 + y4)/2]
 #                self.theta = math.atan((self.y_centroid - self.yrm_centroid)/(self.x_centroid - self.xrm_centroid))
-                self.theta = 0.0
+                self.theta = math.atan((y2-y1)/(x2-x1))
         
             if ID == 2: 
                 # Publish the bot coordinates to the topic  /detected_aruco2
@@ -83,7 +83,9 @@ class ArUcoDetector(Node,CvBridge):
        
                 self.x_centroid1,self.y_centroid1 = [(x11 + x21 + x31 + x41)/2,(y11 + y21 + y31 + y41)/2]
                 self.xrm_centroid1,self.yrm_centroid1 = [(x31 + x41)/2,(y31 + y41)/2]
-                self.theta1 = 0.0
+                if x11 != x21:
+                    self.theta1 = math.atan((y21-y11)/(x21-x11))
+                print(x11,x21,x31,x41)
 #                self.theta1 = math.atan((self.y_centroid1 -self.yrm_centroid1)/(self.x_centroid1 - self.xrm_centroid1))
         
             if ID == 3:
@@ -96,7 +98,7 @@ class ArUcoDetector(Node,CvBridge):
                 self.x_centroid2,self.y_centroid2 = [(x12 + x22 + x32 + x42)/2,(y12 + y22 + y32 + y42)/2]
                 self.xrm_centroid2,self.yrm_centroid2 = [(x32 + x42)/2,(y32 + y42)/2]
                 #self.theta2 = math.atan((self.y_centroid2 - self.yrm_centroid2)/(self.x_centroid2 - self.xrm_centroid2))
-                self.theta2 = 0.0
+                self.theta2 = math.atan((y22-y12)/(x22-x12))
         
         if len(corners) > 0:
             # flatten the ArUco IDs list

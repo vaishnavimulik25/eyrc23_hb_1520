@@ -65,8 +65,8 @@ class HBController1(Node):
         # For maintaining control loop rate.
         self.rate = self.create_rate(100)
 
-        self.linear_thresh=50
-        self.ang_thresh=10
+        self.linear_thresh=5
+        self.ang_thresh=1
         # Initialize a Twist message for velocity commands
         self.vel_left_msg = Wrench()
         self.vel_right_msg = Wrench()
@@ -81,8 +81,8 @@ class HBController1(Node):
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
-        self.k_linear = 0.01
-        self.k_angular = 0.0
+        self.k_linear = 0.05
+        self.k_angular = -15.0
         self.v_left = 0.0
         self.v_right = 0.0
         self.v_rear = 0.0
@@ -121,6 +121,7 @@ class HBController1(Node):
         self.vel_theta = self.k_angular * self.theta_error
 
         # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
+        # print(self.hb_theta)
         self.inverse_kinematics()
 
         # Apply appropriate force vectors
@@ -148,10 +149,11 @@ class HBController1(Node):
         
     def goalCallBack(self, msg):
         self.bot_1_x.extend(msg.x)
-        print(self.bot_1_x)
+        # print(self.bot_1_x)
         self.bot_1_y.extend(msg.y)
         self.bot_1_theta.append(msg.theta)
         self.get_logger().info('goal callback')
+        # print(msg.theta)
         self.a=self.a+1
 
 def main(args=None):
@@ -162,9 +164,10 @@ def main(args=None):
     while rclpy.ok():
         first = time.time()
         if len(hb_controller1.bot_1_x) != 0 and len(hb_controller1.bot_1_y) !=0 :
+            print(hb_controller1.bot_1_theta[0])
             hb_controller1.calculate_velocity_commands(hb_controller1.bot_1_x[0],hb_controller1.bot_1_y[0],hb_controller1.bot_1_theta[0])
         
-        if abs(hb_controller1.theta_error) <= hb_controller1.ang_thresh and abs(hb_controller1.x_error) <= hb_controller1.linear_thresh and abs(hb_controller1.y_error) <= hb_controller1.linear_thresh and hb_controller1.a != 0 and (first - second) > 0.01:
+        if abs(hb_controller1.theta_error) <= hb_controller1.ang_thresh and abs(hb_controller1.x_error) <= hb_controller1.linear_thresh and abs(hb_controller1.y_error) <= hb_controller1.linear_thresh and hb_controller1.a != 0 and (first - second) > 0.1:
             second = time.time()
             hb_controller1.bot_1_x = deque(hb_controller1.bot_1_x)
             hb_controller1.bot_1_y = deque(hb_controller1.bot_1_y)
@@ -173,6 +176,7 @@ def main(args=None):
             hb_controller1.bot_1_y.popleft()
             hb_controller1.bot_1_theta.popleft()
             hb_controller1.get_logger().info("Goal reached")
+            
 
         rclpy.spin_once(hb_controller1)
     # Destroy the node and shut down ROS

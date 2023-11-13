@@ -37,16 +37,16 @@ class ArUcoDetector(Node, CvBridge):
         super().__init__('ar_uco_detector')
 
         # Subscribe the topic /camera/image_raw
-        self.camera_subscriber = self.create_subscription(Image, "/camera/image_raw", self.image_callback, 10)
+        self.camera_subscriber = self.create_subscription(
+            Image, "/camera/image_raw", self.image_callback, 10)
         self.x_centroid = 0.0
         self.y_centroid = 0.0
         self.theta = 0.0
         self.coordinates = Pose2D()
 
-
     def image_callback(self, msg):
 
-        ## convert ROS image to opencv image
+        # convert ROS image to opencv image
         cvb = CvBridge()
         cv_image = cvb.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         # self.get_logger().info("cv image converted")
@@ -82,14 +82,14 @@ class ArUcoDetector(Node, CvBridge):
         # }
         # arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
         arucoDict = cv2.aruco.getPredefinedDictionary(
-            cv2.aruco.DICT_4X4_1000)
+            cv2.aruco.DICT_4X4_50)
         arucoParams = cv2.aruco.DetectorParameters()
         (corners, ids, rejected) = cv2.aruco.detectMarkers(
             cv_image, arucoDict, parameters=arucoParams)
         corner_copy = corners
         for (corner, ID) in zip(corners, ids):
             if ID == 1:
-                
+
                 (x1, y1) = corner[0][0][:2]
                 (x2, y2) = corner[0][1][:2]
                 (x3, y3) = corner[0][2][:2]
@@ -97,12 +97,13 @@ class ArUcoDetector(Node, CvBridge):
                 self.x_centroid = (x1 + x2 + x3 + x4)/4
                 # print(y1,y2,y3,y4)
                 self.y_centroid = (y1 + y2 + y3 + y4)/4
-                self.theta =  math.atan((y2-y1)/(x2-x1))
+                self.theta = math.atan((y2-y1)/(x2-x1))
 
                 self.coordinates.x = self.x_centroid
                 self.coordinates.y = self.y_centroid
                 self.coordinates.theta = self.theta
-                print(self.coordinates.x,self.coordinates.y,self.coordinates.theta)
+                print(self.coordinates.x, self.coordinates.y,
+                      self.coordinates.theta)
 
         if len(corners) > 0:
             # flatten the ArUco IDs list
@@ -148,9 +149,9 @@ class ArUcoDetector(Node, CvBridge):
             Pose2D, "/detected_aruco", 10)
         self.aruco_publisher.publish(self.coordinates)
         # self.get_logger().info("coordinates published successfully")
-        
-        
+
         cv2.imshow("Camera output resized", cv_image)
+
 
 def main(args=None):
     rclpy.init(args=args)

@@ -51,6 +51,10 @@ import numpy as np
 
 
 # Define the HBController class, which is a ROS node
+x_goal = 250
+y_goal = 250
+
+
 class HBController(Node):
     def __init__(self):
         super().__init__('hb_controller')
@@ -64,7 +68,7 @@ class HBController(Node):
             Wrench, '/hb_bot_1/right_wheel_force', 10)
         self.rear_pub = self.create_publisher(
             Wrench, '/hb_bot_1/rear_wheel_force', 10)
-
+        # self._loop_rate = self.create_rate(loop_rate, self.get_clock())
         # For maintaining control loop rate.
         self.rate = self.create_rate(100)
 
@@ -74,18 +78,30 @@ class HBController(Node):
         self.vel_rear_msg = Wrench()
 
         # Initialize required variables
-        self.a = 0
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
+
         self.k_linear = 0.1
         self.k_angular = -15.0
+        self.k_linear_i = 0.02
+        self.k_angular_i = 1
+        self.k_linear_d = 0.005
+        self.k_angular_d = 1
+
         self.v_left = 0.0
         self.v_right = 0.0
         self.v_rear = 0.0
         self.vel_x = 0.0
         self.vel_y = 0.0
         self.vel_theta = 0.0
+
+        self.prev_error_x = 0.0
+        self.prev_error_y = 0.0
+        self.prev_error_theta = 0.0
+        self.integral_x = 0.0
+        self.integral_y = 0.0
+        self.integral_theta = 0.0
 
         # client for the "next_goal" service ie provide type and name of the
         # service ,cli is object representing the client
@@ -109,6 +125,18 @@ class HBController(Node):
         y_error = (y - self.hb_y)
         theta_error = (th - self.hb_theta)
 
+        self.integral_x += x_error
+        self.integral_y += y_error
+        self.integral_theta += theta_error
+
+        derivative_x = x_error - self.prev_error_x
+        derivative_y = y_error - self.prev_error_y
+        derivative_theta = theta_error - self.prev_error_theta
+
+        self.prev_error_x = x_error
+        self.prev_error_y = y_error
+        self.prev_error_theta = theta_error
+
         # Change the frame by using Rotation Matrix (If you find it required)
         robot_frame_x_vel = (x_error * math.cos(self.hb_theta)) - \
             (y_error * math.sin(self.hb_theta))
@@ -119,6 +147,16 @@ class HBController(Node):
         self.vel_x = self.k_linear * robot_frame_x_vel
         self.vel_y = self.k_linear * robot_frame_y_vel
         self.vel_theta = self.k_angular * theta_error
+
+        # self.vel_x = self.k_linear * robot_frame_x_vel + \
+        #     self.k_linear_i * self.integral_x + \
+        #     self.k_linear_d * derivative_x
+        # self.vel_y = self.k_linear * robot_frame_y_vel + \
+        #     self.k_linear_i * self.integral_y + \
+        #     self.k_linear_d * derivative_y
+        # self.vel_theta = self.k_angular * theta_error + \
+        #     self.k_angular_i * self.integral_theta + \
+        #     self.k_angular_d * derivative_theta
 
         # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
         self.inverse_kinematics()
@@ -163,6 +201,7 @@ def main(args=None):
 
     # Create an instance of the HBController class
     hb_controller = HBController()
+
     # Main loop
     while rclpy.ok():
 
@@ -182,24 +221,24 @@ def main(args=None):
                     #########           GOAL POSE             #########
                     x_goal = response.x_goal + 250
                     y_goal = response.y_goal + 250
-                    theta_goal = 0.0
+                    theta_goal = 0
                     hb_controller.flag = response.end_of_list
                 ####################################################
 
                     hb_controller.calculate_velocity_commands(
                         x_goal, y_goal, theta_goal)
 
-                    hb_controller.get_logger().info("done")
                 # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
 
                 ############     DO NOT MODIFY THIS       #########
-                if hb_controller.distance(x_goal, y_goal) < 5:
+                if hb_controller.distance(x_goal, y_goal) < 3:
                     hb_controller.index += 1
                     if hb_controller.flag == 1:
                         hb_controller.index = 0
                     hb_controller.get_logger().info("goal reached")
                 ####################################################
 
+                hb_controller.get_logger().info("done")
         # Spin once to process callbacks
         rclpy.spin_once(hb_controller)
         hb_controller.rate.sleep()
