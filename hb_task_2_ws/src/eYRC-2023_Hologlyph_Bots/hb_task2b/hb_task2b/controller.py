@@ -74,7 +74,6 @@ class HBController(Node):
         self.vel_rear_msg = Wrench()
 
         # Initialize required variables
-        self.a = 0
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
@@ -163,6 +162,7 @@ def main(args=None):
 
     # Create an instance of the HBController class
     hb_controller = HBController()
+
     # Main loop
     while rclpy.ok():
 
@@ -182,14 +182,13 @@ def main(args=None):
                     #########           GOAL POSE             #########
                     x_goal = response.x_goal + 250
                     y_goal = response.y_goal + 250
-                    theta_goal = 0.0
+                    theta_goal = 0
                     hb_controller.flag = response.end_of_list
                 ####################################################
 
                     hb_controller.calculate_velocity_commands(
                         x_goal, y_goal, theta_goal)
 
-                    hb_controller.get_logger().info("done")
                 # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
 
                 ############     DO NOT MODIFY THIS       #########
@@ -200,6 +199,7 @@ def main(args=None):
                     hb_controller.get_logger().info("goal reached")
                 ####################################################
 
+                hb_controller.get_logger().info("done")
         # Spin once to process callbacks
         rclpy.spin_once(hb_controller)
         hb_controller.rate.sleep()

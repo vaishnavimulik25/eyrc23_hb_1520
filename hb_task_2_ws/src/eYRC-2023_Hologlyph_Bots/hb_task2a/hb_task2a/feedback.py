@@ -80,24 +80,29 @@ class ArUcoDetector(Node, CvBridge):
         # 	"DICT_APRILTAG_36h10": cv2.aruco.DICT_APRILTAG_36h10,
         # 	"DICT_APRILTAG_36h11": cv2.aruco.DICT_APRILTAG_36h11
         # }
-        arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+        # arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+        arucoDict = cv2.aruco.getPredefinedDictionary(
+            cv2.aruco.DICT_4X4_1000)
         arucoParams = cv2.aruco.DetectorParameters()
         (corners, ids, rejected) = cv2.aruco.detectMarkers(
             cv_image, arucoDict, parameters=arucoParams)
         corner_copy = corners
         for (corner, ID) in zip(corners, ids):
             if ID == 1:
+                
                 (x1, y1) = corner[0][0][:2]
                 (x2, y2) = corner[0][1][:2]
                 (x3, y3) = corner[0][2][:2]
                 (x4, y4) = corner[0][3][:2]
                 self.x_centroid = (x1 + x2 + x3 + x4)/4
+                # print(y1,y2,y3,y4)
                 self.y_centroid = (y1 + y2 + y3 + y4)/4
-                self.theta = 0.0
+                self.theta =  math.atan((y2-y1)/(x2-x1))
 
                 self.coordinates.x = self.x_centroid
                 self.coordinates.y = self.y_centroid
                 self.coordinates.theta = self.theta
+                print(self.coordinates.x,self.coordinates.y,self.coordinates.theta)
 
         if len(corners) > 0:
             # flatten the ArUco IDs list
@@ -133,6 +138,9 @@ class ArUcoDetector(Node, CvBridge):
                     0.5, (0, 255, 0), 2)
         cv2.putText(cv_image, str(self.coordinates.y),
                     (250, 270), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5, (0, 255, 0), 2)
+        cv2.putText(cv_image, str(self.coordinates.theta),
+                    (250, 300), cv2.FONT_HERSHEY_SIMPLEX,
                     0.5, (0, 255, 0), 2)
 
         # created /detected_aruco topic

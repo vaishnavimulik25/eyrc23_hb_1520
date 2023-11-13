@@ -99,7 +99,8 @@ def generate_triangle(side_length, x_center, y_center, theta, num_points):
     
     x = np.concatenate((x_left, x_right[1:], x_bottom[1:]))
     y = np.concatenate((y_left, y_right[1:], y_bottom[1:]))
-    
+    print(x.tolist())
+    print(y.tolist())
     return x.tolist(), y.tolist(), theta
 
 def generate_square(side_length, x_center, y_center, theta, num_points):

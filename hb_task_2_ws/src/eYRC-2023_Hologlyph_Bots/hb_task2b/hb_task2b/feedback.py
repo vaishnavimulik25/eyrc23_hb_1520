@@ -23,6 +23,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Pose2D
 import cv2
+import numpy as np
 import math
 #import argparse
 from cv_bridge import CvBridge #for using cv_bridge for converting ros image to opencv image
@@ -36,6 +37,15 @@ class ArUcoDetector(Node,CvBridge):
         
         # Subscribe the topic /camera/image_raw
         self.camera_subscriber = self.create_subscription(Image,"/camera/image_raw",self.image_callback,10)
+        self.x_centroid = 0.0
+        self.x_centroid1 = 0.0
+        self.x_centroid2 = 0.0
+        self.y_centroid = 0.0
+        self.y_centroid1 = 0.0
+        self.y_centroid2 = 0.0
+        self.theta = 0.0
+        self.theta1 = 0.0
+        self.theta2 = 0.0
 
     def image_callback(self, msg):
         
@@ -45,105 +55,136 @@ class ArUcoDetector(Node,CvBridge):
         #self.get_logger().info("cv image converted")        
 
         #Detect Aruco marker
-        #NOTE only for reference
-       # ap = argparse.ArgumentParser()
-       # ap.add_argument("-t","--type",type=str,default="DICT_ARUCO_ORIGINAL",help="type of Aruco tag to detect")
-       # args = vars(ap.parse_args())
-       # # define names of each possible ArUco tag OpenCV supports
-       # ARUCO_DICT = {
-       # 	"DICT_4X4_50": cv2.aruco.DICT_4X4_50,
-       # 	"DICT_4X4_100": cv2.aruco.DICT_4X4_100,
-       # 	"DICT_4X4_250": cv2.aruco.DICT_4X4_250,
-       # 	"DICT_4X4_1000": cv2.aruco.DICT_4X4_1000,
-       # 	"DICT_5X5_50": cv2.aruco.DICT_5X5_50,
-       # 	"DICT_5X5_100": cv2.aruco.DICT_5X5_100,
-       # 	"DICT_5X5_250": cv2.aruco.DICT_5X5_250,
-       # 	"DICT_5X5_1000": cv2.aruco.DICT_5X5_1000,
-       # 	"DICT_6X6_50": cv2.aruco.DICT_6X6_50,
-       # 	"DICT_6X6_100": cv2.aruco.DICT_6X6_100,
-       # 	"DICT_6X6_250": cv2.aruco.DICT_6X6_250,
-       # 	"DICT_6X6_1000": cv2.aruco.DICT_6X6_1000,
-       # 	"DICT_7X7_50": cv2.aruco.DICT_7X7_50,
-       # 	"DICT_7X7_100": cv2.aruco.DICT_7X7_100,
-       # 	"DICT_7X7_250": cv2.aruco.DICT_7X7_250,
-       # 	"DICT_7X7_1000": cv2.aruco.DICT_7X7_1000,
-       # 	"DICT_ARUCO_ORIGINAL": cv2.aruco.DICT_ARUCO_ORIGINAL,
-       # 	"DICT_APRILTAG_16h5": cv2.aruco.DICT_APRILTAG_16h5,
-       # 	"DICT_APRILTAG_25h9": cv2.aruco.DICT_APRILTAG_25h9,
-       # 	"DICT_APRILTAG_36h10": cv2.aruco.DICT_APRILTAG_36h10,
-       # 	"DICT_APRILTAG_36h11": cv2.aruco.DICT_APRILTAG_36h11
-       # }
-
         arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
         arucoParams = cv2.aruco.DetectorParameters()
         (corners,ids,rejected) = cv2.aruco.detectMarkers(cv_image, arucoDict, parameters=arucoParams)
         
         #self.get_logger().info("aruco detected successfully")        
         
-        # Publish the bot coordinates to the topic  /detected_aruco
-        (x1,y1) = corners[0][0][0][:2]
-        (x2,y2) = corners[0][0][1][:2]
-        (x3,y3) = corners[0][0][2][:2]
-        (x4,y4) = corners[0][0][3][:2]
+        # Publish the bot coordinates to the topic  /detected_aruco1
+        for (Corners,ID) in zip(corners,ids):
+            if ID == 1:
+                (x1,y1) = Corners[0][0][:2]
+                (x2,y2) = Corners[0][1][:2]
+                (x3,y3) = Corners[0][2][:2]
+                (x4,y4) = Corners[0][3][:2]
        
-        x_centroid = (x1 + x2 + x3 + x4)/4
-        y_centroid = (y1 + y2 + y3 + y4)/4
-        theta = math.atan(y_centroid/x_centroid)
+                self.x_centroid,self.y_centroid = [(x1 + x2 + x3 + x4)/2,(y1 + y2 + y3 + y4)/2]
+                self.xrm_centroid,self.yrm_centroid = [(x3 + x4)/2,(y3 + y4)/2]
+#                self.theta = math.atan((self.y_centroid - self.yrm_centroid)/(self.x_centroid - self.xrm_centroid))
+                self.theta = 0.0
         
+            if ID == 2: 
+                # Publish the bot coordinates to the topic  /detected_aruco2
+                (x11,y11) = Corners[0][0][:2]
+                (x21,y21) = Corners[0][1][:2]
+                (x31,y31) = Corners[0][2][:2]
+                (x41,y41) = Corners[0][3][:2]
+       
+                self.x_centroid1,self.y_centroid1 = [(x11 + x21 + x31 + x41)/2,(y11 + y21 + y31 + y41)/2]
+                self.xrm_centroid1,self.yrm_centroid1 = [(x31 + x41)/2,(y31 + y41)/2]
+                self.theta1 = 0.0
+#                self.theta1 = math.atan((self.y_centroid1 -self.yrm_centroid1)/(self.x_centroid1 - self.xrm_centroid1))
+        
+            if ID == 3:
+                # Publish the bot coordinates to the topic  /detected_aruco3
+                (x12,y12) = Corners[0][0][:2]
+                (x22,y22) = Corners[0][1][:2]
+                (x32,y32) = Corners[0][2][:2]
+                (x42,y42) = Corners[0][3][:2]
+       
+                self.x_centroid2,self.y_centroid2 = [(x12 + x22 + x32 + x42)/2,(y12 + y22 + y32 + y42)/2]
+                self.xrm_centroid2,self.yrm_centroid2 = [(x32 + x42)/2,(y32 + y42)/2]
+                #self.theta2 = math.atan((self.y_centroid2 - self.yrm_centroid2)/(self.x_centroid2 - self.xrm_centroid2))
+                self.theta2 = 0.0
+        
+        if len(corners) > 0:
+            # flatten the ArUco IDs list
+            ids = ids.flatten()
+            # loop over the detected ArUCo corners
+            for (markerCorner, markerID) in zip(corners, ids):
+                # extract the marker corners (which are always returned in
+                # top-left, top-right, bottom-right, and bottom-left order)
+                corners = markerCorner.reshape((4, 2))
+                (topLeft, topRight, bottomRight, bottomLeft) = corners
+                # convert each of the (x, y)-coordinate pairs to integers
+                topRight = (int(topRight[0]), int(topRight[1]))
+                bottomRight = (int(bottomRight[0]), int(bottomRight[1]))
+                bottomLeft = (int(bottomLeft[0]), int(bottomLeft[1]))
+                topLeft = (int(topLeft[0]), int(topLeft[1]))
+
+                # draw the bounding box of the ArUCo detection
+                cv2.line(cv_image, topLeft, topRight, (0, 255, 0), 2)
+                cv2.line(cv_image, topRight, bottomRight, (0, 255, 0), 2)
+                cv2.line(cv_image, bottomRight, bottomLeft, (0, 255, 0), 2)
+                cv2.line(cv_image, bottomLeft, topLeft, (0, 255, 0), 2)
+                # compute and draw the center (x, y)-coordinates of the ArUcomarker
+                cX = int((topLeft[0] + bottomRight[0]) / 2.0)
+                cY = int((topLeft[1] + bottomRight[1]) / 2.0)
+                cv2.circle(cv_image, (cX, cY), 4, (0, 0, 255), -1)
+                # draw the ArUco marker ID on the image
+                cv2.putText(cv_image, str(
+                    markerID), (topLeft[0], topLeft[1] - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+        cv2.waitKey(1)
         #coordinates to be converted in msg type Pose2D 
         coordinates = Pose2D()
-        coordinates.x = x_centroid
-        coordinates.y = y_centroid
-        coordinates.theta = theta
+        coordinates.x = self.x_centroid
+        coordinates.y = self.y_centroid
+        coordinates.theta = self.theta
         #self.get_logger().info("coordinates of bot got successfully")        
-        
-        # Publish the bot coordinates to the topic  /detected_aruco
-        (x11,y11) = corners[0][1][0][:2]
-        (x21,y21) = corners[0][1][1][:2]
-        (x31,y31) = corners[0][1][2][:2]
-        (x41,y41) = corners[0][1][3][:2]
-       
-        x_centroid1 = (x11 + x21 + x31 + x41)/4
-        y_centroid1 = (y11 + y21 + y31 + y41)/4
-        theta1 = math.atan(y_centroid1/x_centroid1)
         
         #coordinates to be converted in msg type Pose2D 
         coordinates1 = Pose2D()
-        coordinates1.x = x_centroid1
-        coordinates1.y = y_centroid1
-        coordinates1.theta = theta1
+        coordinates1.x = self.x_centroid1
+        coordinates1.y = self.y_centroid1
+        coordinates1.theta = self.theta1
         #self.get_logger().info("coordinates of bot got successfully")        
-
-
-        # Publish the bot coordinates to the topic  /detected_aruco
-        (x12,y12) = corners[0][2][0][:2]
-        (x22,y22) = corners[0][2][1][:2]
-        (x32,y32) = corners[0][2][2][:2]
-        (x42,y42) = corners[0][2][3][:2]
-       
-        x_centroid2 = (x12 + x22 + x32 + x42)/4
-        y_centroid2 = (y12 + y22 + y32 + y42)/4
-        theta2 = math.atan(y_centroid2/x_centroid2)
         
         #coordinates to be converted in msg type Pose2D 
         coordinates2 = Pose2D()
-        coordinates2.x = x_centroid2
-        coordinates2.y = y_centroid2
-        coordinates2.theta = theta2
+        coordinates2.x = self.x_centroid2
+        coordinates2.y = self.y_centroid2
+        coordinates2.theta = self.theta2
         #self.get_logger().info("coordinates of bot got successfully")        
 
+        #for hb_bot1
+        cv2.putText(cv_image, str(coordinates.x),
+                    (100, 250), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5, (0, 255, 0), 2)
+        cv2.putText(cv_image, str(coordinates.y),
+                    (100, 270), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5, (0, 255, 0), 2)
+        #for hb_bot2
+        cv2.putText(cv_image, str(coordinates1.x),
+                    (250, 250), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5, (0, 255, 0), 2)
+        cv2.putText(cv_image, str(coordinates1.y),
+                    (250, 270), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5, (0, 255, 0), 2)
+        
+        #for hb_bot3
+        cv2.putText(cv_image, str(coordinates2.x),
+                    (400, 250), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5, (0, 255, 0), 2)
+        cv2.putText(cv_image, str(coordinates2.y),
+                    (400, 270), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5, (0, 255, 0), 2)
+
         #created /detected_aruco_1 topic
-        self.aruco_publisher = self.create_publisher(Pose2D,"/detected_aruco_1",10)
+        self.aruco_publisher = self.create_publisher(Pose2D,'/detected_aruco_1',10)
         self.aruco_publisher.publish(coordinates)
         #self.get_logger().info("coordinates published successfully")        
 
         #created /detected_aruco_2 topic
-        self.aruco_publisher = self.create_publisher(Pose2D,"/detected_aruco_2",10)
+        self.aruco_publisher = self.create_publisher(Pose2D,'/detected_aruco_2',10)
         self.aruco_publisher.publish(coordinates1)
         
         #created /detected_aruco_3 topic
-        self.aruco_publisher = self.create_publisher(Pose2D,"/detected_aruco_3",10)
+        self.aruco_publisher = self.create_publisher(Pose2D,'/detected_aruco_3',10)
         self.aruco_publisher.publish(coordinates2)
+        cv2.imshow("Camera output resized", cv_image)
+
 def main(args=None):
     rclpy.init(args=args)
 
