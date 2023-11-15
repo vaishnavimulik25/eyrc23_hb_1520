@@ -26,6 +26,7 @@ import math
 import argparse
 # for using cv_bridge for converting ros image to opencv image
 from cv_bridge import CvBridge
+import numpy as np
 
 # Import the required modules
 ##############################################################
@@ -41,6 +42,7 @@ class ArUcoDetector(Node, CvBridge):
             Image, "/camera/image_raw", self.image_callback, 10)
         self.x_centroid = 0.0
         self.y_centroid = 0.0
+        self.path_coordinates = []
         self.theta = 0.0
         self.coordinates = Pose2D()
 
@@ -83,7 +85,7 @@ class ArUcoDetector(Node, CvBridge):
         # arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
         arucoDict = cv2.aruco.getPredefinedDictionary(
             cv2.aruco.DICT_4X4_50)
-        arucoParams = cv2.aruco.DetectorParameters()
+        arucoParams = cv2.aruco.DetectorParameters( )
         (corners, ids, rejected) = cv2.aruco.detectMarkers(
             cv_image, arucoDict, parameters=arucoParams)
         corner_copy = corners
@@ -143,6 +145,11 @@ class ArUcoDetector(Node, CvBridge):
         cv2.putText(cv_image, str(self.coordinates.theta),
                     (250, 300), cv2.FONT_HERSHEY_SIMPLEX,
                     0.5, (0, 255, 0), 2)
+        self.path_coordinates.append([self.x_centroid, self.y_centroid])
+        pts = np.array(self.path_coordinates, np.int32)
+        pts = pts.reshape((-1, 1, 2))
+        cv2.polylines(cv_image, [pts], isClosed=False,
+                      color=(255, 255, 255), thickness=2)
 
         # created /detected_aruco topic
         self.aruco_publisher = self.create_publisher(

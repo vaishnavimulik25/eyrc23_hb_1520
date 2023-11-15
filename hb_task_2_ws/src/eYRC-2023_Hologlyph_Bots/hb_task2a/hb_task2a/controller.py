@@ -51,8 +51,6 @@ import numpy as np
 
 
 # Define the HBController class, which is a ROS node
-x_goal = 250
-y_goal = 250
 
 
 class HBController(Node):
@@ -70,7 +68,7 @@ class HBController(Node):
             Wrench, '/hb_bot_1/rear_wheel_force', 10)
         # self._loop_rate = self.create_rate(loop_rate, self.get_clock())
         # For maintaining control loop rate.
-        self.rate = self.create_rate(100)
+        self.rate = self.create_rate(1)
 
         # Initialize a Twist message for velocity commands
         self.vel_left_msg = Wrench()
@@ -81,13 +79,17 @@ class HBController(Node):
         self.hb_x = 0.0
         self.hb_y = 0.0
         self.hb_theta = 0.0
+        self.c = 0
 
-        self.k_linear = 0.1
-        self.k_angular = -15.0
-        self.k_linear_i = 0.02
-        self.k_angular_i = 1
-        self.k_linear_d = 0.005
-        self.k_angular_d = 1
+        self.k_linear = 0.15
+        self.k_angular = -15
+        self.k_linear_i = 0.00
+        self.k_angular_i = 0
+        self.k_linear_d = 0.00
+        self.k_angular_d = 0
+        
+        time = 0
+        self.time_prev = -1e-6
 
         self.v_left = 0.0
         self.v_right = 0.0
@@ -125,29 +127,50 @@ class HBController(Node):
         y_error = (y - self.hb_y)
         theta_error = (th - self.hb_theta)
 
-        self.integral_x += x_error
-        self.integral_y += y_error
+        # self.integral_x += x_error * self.k_linear_i * (float(time.time())-self.time_prev)
+        # self.integral_y += y_error * self.k_linear_i * (float(time.time())-self.time_prev)
+        self.integral_x += x_error * self.k_linear_i
+        self.integral_y += y_error * self.k_linear_i
         self.integral_theta += theta_error
 
-        derivative_x = x_error - self.prev_error_x
-        derivative_y = y_error - self.prev_error_y
-        derivative_theta = theta_error - self.prev_error_theta
-
+        # self.derivative_x = self.k_linear_d * \
+        #     (x_error - self.prev_error_x) / (float(time.time())-self.time_prev)
+        # self.derivative_y = self.k_linear_d * \
+        #     (y_error - self.prev_error_y) / (float(time.time())-self.time_prev)
+        # self.derivative_theta = theta_error - self.prev_error_theta
+        self.derivative_x = self.k_linear_d * (x_error - self.prev_error_x)
+        self.derivative_y = self.k_linear_d * (y_error - self.prev_error_y)
+        self.derivative_theta = theta_error - self.prev_error_theta
+        
+        # time = time.time()
         self.prev_error_x = x_error
         self.prev_error_y = y_error
         self.prev_error_theta = theta_error
+        
+        self.time_prev = float(time.time())
 
         # Change the frame by using Rotation Matrix (If you find it required)
-        robot_frame_x_vel = (x_error * math.cos(self.hb_theta)) - \
+        robot_frame_x_vel = (x_error * math.cos(self.hb_theta)) + \
             (y_error * math.sin(self.hb_theta))
         robot_frame_y_vel = (y_error * math.cos(self.hb_theta)) - \
             (x_error * math.sin(self.hb_theta))
-
+        # if x_error < 1 and y_error < 1:
+        #     self.k_linear = 0.2
+        # elif x_error < 2 and y_error < 2:
+        #     self.k_linear =0.18
+        # elif x_error < 3 and y_error < 3:
+        #     self.k_linear = 0.15
+        # elif x_error < 10 and y_error < 10:
+        #     self.k_linear = 0.1
+        # else:
+        #     self.k_linear = 0.08
         # Calculate the required velocity of bot for the next iteration(s)
-        self.vel_x = self.k_linear * robot_frame_x_vel
-        self.vel_y = self.k_linear * robot_frame_y_vel
+        self.vel_x = self.k_linear * robot_frame_x_vel + self.derivative_x + self.integral_x
+        self.vel_y = self.k_linear * robot_frame_y_vel + self.derivative_y + self.integral_y
         self.vel_theta = self.k_angular * theta_error
-
+        # if x_error < 10 and y_error < 10:
+        #     self.vel_x = 1
+        #     self.vel_y = 1
         # self.vel_x = self.k_linear * robot_frame_x_vel + \
         #     self.k_linear_i * self.integral_x + \
         #     self.k_linear_d * derivative_x
@@ -224,21 +247,31 @@ def main(args=None):
                     theta_goal = 0
                     hb_controller.flag = response.end_of_list
                 ####################################################
-
+                    # if hb_controller.distance(x_goal, y_goal)<10:
+                    #     hb_controller.k_linear = 0.15
+                    # elif hb_controller.distance(x_goal, y_goal) < 5:
+                    #     hb_controller.k_linear = 0.2
+                    # elif hb_controller.distance(x_goal, y_goal) < 2:
+                    #     hb_controller.k_linear = 0.25
+                    # else:
+                    #     pass
                     hb_controller.calculate_velocity_commands(
                         x_goal, y_goal, theta_goal)
 
                 # Modify the condition to Switch to Next goal (given position in pixels instead of meters)
 
                 ############     DO NOT MODIFY THIS       #########
-                if hb_controller.distance(x_goal, y_goal) < 3:
+                if hb_controller.distance(x_goal, y_goal) < 1.5 or hb_controller.c > 10:
+                # if hb_controller.distance(x_goal, y_goal) < 1:
                     hb_controller.index += 1
                     if hb_controller.flag == 1:
                         hb_controller.index = 0
                     hb_controller.get_logger().info("goal reached")
+                    hb_controller.c = 0
                 ####################################################
 
                 hb_controller.get_logger().info("done")
+                hb_controller.c=hb_controller.c+1
         # Spin once to process callbacks
         rclpy.spin_once(hb_controller)
         hb_controller.rate.sleep()
