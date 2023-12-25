@@ -8,11 +8,18 @@ class Publisher(Node):
         super().__init__('Publisher_node')
         # Initialze Publisher with the "/Integer" topic
         self.integer = self.create_publisher(Int32, "Integer", 10)
-        self.cmd_vel_bot_1 = self.create_publisher(Twist, 'cmd_vel', 10)
-        self.cmd_vel_bot_2 = self.create_publisher(Twist, 'cmd_vel', 10)
-        self.cmd_vel_bot_3 = self.create_publisher(Twist, 'cmd_vel', 10)
+        self.cmd_vel_bot_1 = self.create_publisher(Twist, '/cmd_vel/bot1', 10)
+        # self.cmd_vel_bot_2 = self.create_publisher(Twist, 'cmd_vel', 10)
+        # self.cmd_vel_bot_3 = self.create_publisher(Twist, 'cmd_vel', 10)
         self.timer = self.create_timer(0.5, self.timer_callback)
         self.i = 0
+
+    def vel_pub_bot_1(self):
+        bot1_vel = Twist()
+        bot1_vel.linear.x = 1.0
+        bot1_vel.linear.y = 1.0
+        bot1_vel.angular.z = 0.0
+        self.cmd_vel_bot_1.publish(bot1_vel)
 
     def timer_callback(self):
         msg = Int32()
@@ -23,13 +30,9 @@ class Publisher(Node):
         # Publish the msg
         self.i = self.i + 1
         # Increment the i
+        self.vel_pub_bot_1()
 
-    def vel_pub_bot_1(self):
-        bot1_vel = Twist()
-        bot1_vel.angular.x = 1
-        bot1_vel.angular.y = 1
-        bot1_vel.angular.z = 0
-        self.cmd_vel_pub_1.publish(bot1_vel)
+
 
 def main(args=None):
     rclpy.init(args=args)
