@@ -1,7 +1,7 @@
 # E-yantra'23 
 ## Theme-Hologlyph Bots 
 #Youtube Link <br/>
-https://youtu.be/qWURGrMS0P0?si=cd1IuRPc2VLi7-Jv <br/>  https://www.youtube.com/watch?v=_phmCzbwnHo
+https://www.youtube.com/playlist?list=PLYO_4zHVdMZ3p7xwb1HZyRcdP5yJp0FcX
 <br/>
 
 ## Dependencies and pre-requisites
