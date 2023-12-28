@@ -44,7 +44,37 @@ def generate_launch_description():
             os.path.join(pkg_sim_bot, 'launch', 'multi_bot_spawn.launch.py'),
         )
     )
+
+    feedback_node = Node(
+        package = "hb_task2b",
+        executable = "feedback"
+    )
+
+    Controller_node1 = Node(
+        package="hb_task2b",
+        executable="controller1"
+    )
+
+    Controller_node2 = Node(
+        package="hb_task2b",
+        executable="controller2"
+    )
+
+    Controller_node3 = Node(
+        package="hb_task2b",
+        executable="controller3"
+    )
+
+    Next_Goal = Node(
+        package="hb_task2b",
+        executable="nextgoalpub"
+    )
     return LaunchDescription([
         world,
-        spwan_bot
+        spwan_bot,
+        feedback_node,
+#        Controller_node1,
+        Controller_node2,
+#        Controller_node3,
+        Next_Goal
         ])

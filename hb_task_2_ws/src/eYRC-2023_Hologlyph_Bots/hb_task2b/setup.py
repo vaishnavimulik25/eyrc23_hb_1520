@@ -3,7 +3,6 @@ import os
 from glob import glob
 package_name = 'hb_task2b'
 
-
 setup(
     name=package_name,
     version='0.0.0',
@@ -25,9 +24,12 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-             'controller = hb_task2b.bot_controller:main',
-             'nextgoalpub= hb_task2b.nextGoalPub:main'
-
+             #'controller = hb_task2b.bot_controller:main',
+            'nextgoalpub = hb_task2b.nextGoalPub:main',
+            'feedback = hb_task2b.feedback:main',
+            #'controller1 = hb_task2b.bot_controller1:main'
+            'controller2 = hb_task2b.bot_controller2:main'
+            #'controller3 = hb_task2b.bot_controller3:main'
          ],
     },
 )
