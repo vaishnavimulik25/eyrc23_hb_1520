@@ -56,7 +56,7 @@ class HBController1(Node):
         )
         self.aruco_subscriber = self.create_subscription(
             Pose2D, '/pen2_pose', self.aruco_callback, 10)
-        self.vel_right_msg = self.create_publisher(
+        self.cmd_vel_msg = self.create_publisher(
             Twist, '/cmd_vel/bot2', 10)
 
         # For maintaining control loop rate.
@@ -120,7 +120,7 @@ class HBController1(Node):
         self.left_pub.linear.y = self.vel_y
         self.left_pub.angular.z = self.vel_theta
 
-        self.cmd_vel_pub.publish(self.left_pub)
+        self.cmd_vel_msg.publish(self.left_pub)
 
 #        # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
 #        self.inverse_kinematics()

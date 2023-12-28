@@ -63,7 +63,7 @@ class HBController1(Node):
         self.linear_thresh = 5
         self.ang_thresh = 0.1
         # Initialize a Twist message for velocity commands
-        self.vel_msg = Twist()
+        self.cmd_vel_msg = Twist()
 
         # Initialize required variables
         self.x_error = 0.0
