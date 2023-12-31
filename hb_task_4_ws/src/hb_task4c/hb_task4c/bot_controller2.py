@@ -56,7 +56,7 @@ class HBController1(Node):
         )
         self.aruco_subscriber = self.create_subscription(
             Pose2D, '/pen2_pose', self.aruco_callback, 10)
-        self.cmd_vel_msg = self.create_publisher(
+        self.left_pub = self.create_publisher(
             Twist, '/cmd_vel/bot2', 10)
 
         # For maintaining control loop rate.
@@ -65,7 +65,7 @@ class HBController1(Node):
         self.linear_thresh = 5
         self.ang_thresh = 0.1
         # Initialize a Twist message for velocity commands
-        self.left_pub = Twist()
+        self.cmd_vel_msg = Twist()
 
         # Initialize required variables
         self.x_error = 0.0
@@ -94,7 +94,7 @@ class HBController1(Node):
         self.hb_x = msg.x  # origin shifted
         self.hb_y = msg.y
         self.hb_theta = msg.theta
-        # self.get_logger().info('Aruco call')
+        self.get_logger().info('Aruco call')
 
     def distance(self, x, y):
         return abs(math.sqrt((self.hb_x - x)**2 + (self.hb_y - y)**2))
@@ -116,14 +116,15 @@ class HBController1(Node):
         self.vel_y = self.k_linear * self.robot_frame_y_vel
         self.vel_theta = self.k_angular * self.theta_error
 
-        self.left_pub.linear.x = self.vel_x
-        self.left_pub.linear.y = self.vel_y
-        self.left_pub.angular.z = self.vel_theta
-
-        self.cmd_vel_msg.publish(self.left_pub)
 
 #        # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
-#        self.inverse_kinematics()
+        self.inverse_kinematics()
+
+        self.cmd_vel_msg.linear.x = self.v_left
+        self.cmd_vel_msg.linear.y = self.v_right
+        self.cmd_vel_msg.angular.z = self.v_rear
+
+        self.left_pub.publish(self.cmd_vel_msg)
 #
 #        # Apply appropriate force vectors
 #        self.vel_left_msg.force.y = self.v_left
@@ -152,7 +153,7 @@ class HBController1(Node):
         self.bot_1_x.extend(msg.x)
         self.bot_1_y.extend(msg.y)
         self.bot_1_theta.append(msg.theta)
-        self.get_logger().info('goal callback')
+        #self.get_logger().info('goal callback')
         self.a = self.a+1
 
 

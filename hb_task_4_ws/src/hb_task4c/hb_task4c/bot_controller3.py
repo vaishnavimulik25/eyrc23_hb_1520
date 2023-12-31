@@ -94,7 +94,7 @@ class HBController1(Node):
         self.hb_x = msg.x  # origin shifted
         self.hb_y = msg.y
         self.hb_theta = msg.theta
-        # self.get_logger().info('Aruco call')
+        self.get_logger().info('Aruco call')
 
     def distance(self, x, y):
         return abs(math.sqrt((self.hb_x - x)**2 + (self.hb_y - y)**2))
@@ -116,9 +116,11 @@ class HBController1(Node):
         self.vel_y = self.k_linear * self.robot_frame_y_vel
         self.vel_theta = self.k_angular * self.theta_error
 
-        self.rear_pub.linear.x = self.vel_x
-        self.rear_pub.linear.y = self.vel_y
-        self.rear_pub.angular.z = self.vel_theta
+        self.inverse_kinematics()
+
+        self.rear_pub.linear.x = self.v_left
+        self.rear_pub.linear.y = self.v_right
+        self.rear_pub.angular.z = self.v_rear
 
         self.cmd_vel_msg.publish(self.rear_pub)
 
@@ -152,7 +154,7 @@ class HBController1(Node):
         self.bot_1_x.extend(msg.x)
         self.bot_1_y.extend(msg.y)
         self.bot_1_theta.append(msg.theta)
-        self.get_logger().info('goal callback')
+        #self.get_logger().info('goal callback')
         self.a = self.a+1
 
 

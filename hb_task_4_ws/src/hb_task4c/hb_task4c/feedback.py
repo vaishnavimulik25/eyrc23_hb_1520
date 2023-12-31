@@ -35,7 +35,7 @@ class ArUcoDetector(Node,CvBridge):
         super().__init__('ar_uco_detector')
         
         # Subscribe the topic /camera/image_raw
-        self.camera_subscriber = self.create_subscription(Image,"/camera/image_raw",self.image_callback,10)
+        self.camera_subscriber = self.create_subscription(Image,"/camera1/image_raw",self.image_callback,10)
         self.x_centroid = 0.0
         self.x_centroid1 = 0.0
         self.x_centroid2 = 0.0
@@ -57,7 +57,7 @@ class ArUcoDetector(Node,CvBridge):
         #convert ROS image to opencv image
         cvb = CvBridge()
         cv_image = cvb.imgmsg_to_cv2(msg,desired_encoding='bgr8')
-        #self.get_logger().info("cv image converted")        
+        self.get_logger().info("cv image converted")        
 
         #Detect Aruco marker
         arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100)
