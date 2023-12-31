@@ -46,14 +46,6 @@ def generate_launch_description():
     shell=True
     )
 
-    calibrator = ExecuteProcess(                                                
-    cmd=[[                                                                     
-        'ros2 run camera_calibration cameracalibrator --size 8x6 --square 0.02 --ros-args -r image:=/camera1/image_raw -p camera:=/camera1'
-
-    ]],                                                                        
-    shell=True
-    )
-
     feedback_node = Node(
         package = "hb_task4c",
         executable = "feedback"
@@ -81,7 +73,6 @@ def generate_launch_description():
     return LaunchDescription([
         run_agent,
         camera,
-        calibrator,
         feedback_node,
         Controller_node1,
         Controller_node2,

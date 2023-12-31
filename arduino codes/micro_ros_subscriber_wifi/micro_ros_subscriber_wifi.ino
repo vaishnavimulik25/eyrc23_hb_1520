@@ -7,12 +7,13 @@
 #include <std_msgs/msg/int32.h>
 #include <geometry_msgs/msg/twist.h>
 #include <ESP32Servo360.h>
+#include <ESP32Servo.h>
 
 //servo objects created
 ESP32Servo360 rear;
 ESP32Servo360 left;
 ESP32Servo360 right;
-ESP32Servo360 pen; 
+Servo pen; 
 
 //pin values to servos
 int left_wheel_pin = 33;
@@ -21,7 +22,7 @@ int rear_wheel_pin = 27;
 
 rcl_subscription_t int_subscriber;
 rcl_subscription_t vel_subscriber;
-geometry_msgs__msg__Twist vel_1;
+geometry_msgs__msg__Twist vel_msg;
 std_msgs__msg__Int32 msg;
 rclc_executor_t executor;
 rclc_support_t support;
@@ -31,7 +32,7 @@ rcl_timer_t timer;
 rclc_subscription_callback_t subscription_calback_int;
 rclc_subscription_callback_t subscription_calback_vel;
 
-#define PEN_PIN 13 //33,25,26,27 either of these pins to be given voltage
+#define PEN_PIN 26 //33,25,26,27 either of these pins to be given voltage
 
 
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
@@ -52,18 +53,20 @@ void subscription_callback_int(const void * msgin)
   // digitalWrite(PEN_PIN, (msg->data == 0) ? LOW : HIGH);
   if (msg->data == 0)
   {
-    digitalWrite(PEN_PIN, LOW);
+//i    digitalWrite(PEN_PIN, LOW);
+    pen.write(0);
   }
   else if (msg->data == 1)
   {
-    digitalWrite(PEN_PIN, HIGH);
+//    digitalWrite(PEN_PIN, HIGH);
+    pen.write(1);
   }
 }
 
 //callback for /cmd_vel/bot1 subscription
 void subscription_callback_vel(const void * msgin)
 {
-  const geometry_msgs__msg__Twist * vel_1 = (const geometry_msgs__msg__Twist *)msgin;
+  const geometry_msgs__msg__Twist * vel_msg = (const geometry_msgs__msg__Twist *)msgin;
   
   // Extract linear and angular velocity from the Twist message
   double linear_vel = vel_msg->linear.x;
@@ -87,9 +90,9 @@ void subscription_callback_vel(const void * msgin)
   int steering_servo_angle = map(steering_angle, -M_PI / 2.0, M_PI / 2.0, 0, 360);
 
   // Set servo positions based on calculated angles
-  left.write(left_servo_angle);
-  right.write(right_servo_angle);
-  rear.write(steering_servo_angle);
+  left.setSpeed(left_servo_angle);
+  right.setSpeed(right_servo_angle);
+  rear.setSpeed(steering_servo_angle);
 }
 
 //setup the configuration accordingly
@@ -140,5 +143,5 @@ void loop() {
   Serial.print("Int32 data: ");
   Serial.println(msg.data);
   Serial.print("Twist data: ");
-  Serial.println(vel_1.linear.x); // Assuming Twist has a linear.x field
+  Serial.println(vel_msg.linear.x); // Assuming Twist has a linear.x field
 }
