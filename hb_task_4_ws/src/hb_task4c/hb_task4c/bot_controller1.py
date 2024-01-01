@@ -117,13 +117,13 @@ class HBController1(Node):
         # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
         self.inverse_kinematics()
 
-#        self.cmd_vel_msg.linear.x = self.v_left
-#        self.cmd_vel_msg.linear.y = self.v_right
-#        self.cmd_vel_msg.angular.z = self.v_rear
+        self.cmd_vel_msg.linear.x = self.v_left
+        self.cmd_vel_msg.linear.y = self.v_right
+        self.cmd_vel_msg.angular.z = self.v_rear
 
-        self.cmd_vel_msg.linear.x = 180.0
-        self.cmd_vel_msg.linear.y = 180.0
-        self.cmd_vel_msg.angular.z = 180.0
+#        self.cmd_vel_msg.linear.x = 180.0
+#        self.cmd_vel_msg.linear.y = 180.0
+#        self.cmd_vel_msg.angular.z = 180.0
         self.left_pub.publish(self.cmd_vel_msg)
 #        # Apply appropriate force vectors
 #        self.vel_left_msg.force.y = self.v_left
