@@ -42,6 +42,7 @@ rclc_subscription_callback_t subscription_calback_vel;
 void error_loop(){
   while(1){
     digitalWrite(PEN_PIN, !digitalRead(PEN_PIN));
+    Serial.print("1");
     delay(100);
   }
 }
@@ -66,7 +67,7 @@ void subscription_callback_int(const void * msgin)
 //callback for /cmd_vel/bot1 subscription
 void subscription_callback_vel(const void * msgin)
 {
-  const geometry_msgs__msg__Twist * vel_msg = (const geometry_msgs__msg__Twist *)msgin;
+  /*const geometry_msgs__msg__Twist * vel_msg = (const geometry_msgs__msg__Twist *)msgin;
   
   // Extract linear and angular velocity from the Twist message
   double linear_vel = vel_msg->linear.x;
@@ -85,40 +86,34 @@ void subscription_callback_vel(const void * msgin)
   steering_angle = atan2(angular_vel * wheelbase, linear_vel);
 
   // Map wheel speeds to servo angles
-  int left_servo_angle = map(left_wheel_speed, -1.0, 1.0, 0, 360);
-  int right_servo_angle = map(right_wheel_speed, -1.0, 1.0, 0, 360);
-  int steering_servo_angle = map(steering_angle, -M_PI / 2.0, M_PI / 2.0, 0, 360);
+  int left_servo_angle = map(left_wheel_speed, -1.0, 1.0, 0, 180);
+  int right_servo_angle = map(right_wheel_speed, -1.0, 1.0, 0, 180);
+  int steering_servo_angle = map(steering_angle, -M_PI / 2.0, M_PI / 2.0, 0, 180);
 
   // Set servo positions based on calculated angles
   left.setSpeed(left_servo_angle);
   right.setSpeed(right_servo_angle);
-  rear.setSpeed(steering_servo_angle);
+  rear.setSpeed(steering_servo_angle);*/
 }
 
 //setup the configuration accordingly
 void setup() {
   //wifi setup
-  set_microros_wifi_transports("OPPO A31", "12345678", "192.168.236.31", 8888);
-  Serial.begin(9600);
+  set_microros_wifi_transports("Galaxy M33 5G 501C", "camo7797", "192.168.139.141", 8888);
   
-  //initialise the servos
-  left.attach(left_wheel_pin);
-  right.attach(right_wheel_pin);
-  rear.attach(rear_wheel_pin);
-
-  //initialise the pen
-  pinMode(PEN_PIN, OUTPUT);
-  pen.attach(12,11); // attaches the servo on pin 12 to the servo object
-  digitalWrite(PEN_PIN, HIGH);
+  Serial.begin(9600);
+  /*pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, HIGH);*/
   delay(2000);
 
   allocator = rcl_get_default_allocator();
+  //Serial.println(allocator);
   //create init_options
   RCCHECK(rclc_support_init(&support, 0, NULL, &allocator));
-
+  Serial.print("1");
   // create node
   RCCHECK(rclc_node_init_default(&node, "subscriber_node", "", &support));
-
+  Serial.print("2");
   // create subscriber
   RCCHECK(rclc_subscription_init_default(
     &int_subscriber,
@@ -133,7 +128,17 @@ void setup() {
   // create executor
   RCCHECK(rclc_executor_init(&executor, &support.context, 2, &allocator));
   RCCHECK(rclc_executor_add_subscription(&executor, &int_subscriber, &msg, &subscription_callback_int, ON_NEW_DATA));
-  RCCHECK(rclc_executor_add_subscription(&executor, &vel_subscriber, &vel_1, &subscription_callback_vel, ON_NEW_DATA));
+  RCCHECK(rclc_executor_add_subscription(&executor, &vel_subscriber, &vel_msg, &subscription_callback_vel, ON_NEW_DATA));
+
+  //initialise the servos
+  left.attach(left_wheel_pin,10);
+  right.attach(right_wheel_pin,11);
+  rear.attach(rear_wheel_pin,12);
+
+  //initialise the pen
+  pinMode(PEN_PIN, OUTPUT);
+  pen.attach(PEN_PIN); // attaches the servo on pin 12 to the servo object
+  digitalWrite(PEN_PIN, HIGH);
 }
 
 //code to be executed

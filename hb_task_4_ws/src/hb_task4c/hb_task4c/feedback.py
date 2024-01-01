@@ -57,7 +57,7 @@ class ArUcoDetector(Node,CvBridge):
         #convert ROS image to opencv image
         cvb = CvBridge()
         cv_image = cvb.imgmsg_to_cv2(msg,desired_encoding='bgr8')
-        self.get_logger().info("cv image converted")        
+        #self.get_logger().info("cv image converted")        
 
         #Detect Aruco marker
         arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100)

@@ -92,7 +92,7 @@ class HBController1(Node):
         self.hb_x = msg.x  # origin shifted
         self.hb_y = msg.y
         self.hb_theta = msg.theta
-        self.get_logger().info('Aruco call')
+        #self.get_logger().info('Aruco call')
 
     def distance(self, x, y):
         return abs(math.sqrt((self.hb_x - x)**2 + (self.hb_y - y)**2))
@@ -117,10 +117,13 @@ class HBController1(Node):
         # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
         self.inverse_kinematics()
 
-        self.cmd_vel_msg.linear.x = self.v_left
-        self.cmd_vel_msg.linear.y = self.v_right
-        self.cmd_vel_msg.angular.z = self.v_rear
+#        self.cmd_vel_msg.linear.x = self.v_left
+#        self.cmd_vel_msg.linear.y = self.v_right
+#        self.cmd_vel_msg.angular.z = self.v_rear
 
+        self.cmd_vel_msg.linear.x = 180.0
+        self.cmd_vel_msg.linear.y = 180.0
+        self.cmd_vel_msg.angular.z = 180.0
         self.left_pub.publish(self.cmd_vel_msg)
 #        # Apply appropriate force vectors
 #        self.vel_left_msg.force.y = self.v_left
@@ -161,6 +164,8 @@ def main(args=None):
     # Main loop
     while rclpy.ok():
         first = time.time()
+        hb_controller1.calculate_velocity_commands(hb_controller1.bot_1_x[0], hb_controller1.bot_1_y[0], hb_controller1.bot_1_theta[0])
+        hb_controller1.get_logger().info('goal callback')
         if len(hb_controller1.bot_1_x) != 0 and len(hb_controller1.bot_1_y) != 0 and len(hb_controller1.bot_1_theta) != 0 and (first - third) > 10:
             hb_controller1.calculate_velocity_commands(hb_controller1.bot_1_x[0], hb_controller1.bot_1_y[0], hb_controller1.bot_1_theta[0])
 

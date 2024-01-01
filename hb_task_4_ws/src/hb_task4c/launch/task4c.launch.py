@@ -31,14 +31,6 @@ from launch.actions import (DeclareLaunchArgument, EmitEvent, ExecuteProcess, Lo
 def generate_launch_description():
     share_dir = get_package_share_directory('hb_task4c')
     
-    run_agent = ExecuteProcess(                                                
-    cmd=[[                                                                     
-        'ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888',           
-                                                                               
-    ]],                                                                        
-    shell=True
-    )
-
     camera = ExecuteProcess(                                                
     cmd=[[                                                                     
         'ros2 launch usb_cam camera.launch.py'
@@ -71,11 +63,10 @@ def generate_launch_description():
         executable="nextgoalpub"
     )
     return LaunchDescription([
-        run_agent,
         camera,
         feedback_node,
         Controller_node1,
-        Controller_node2,
-        Controller_node3,
+        #Controller_node2,
+        #Controller_node3,
         Next_Goal
         ])

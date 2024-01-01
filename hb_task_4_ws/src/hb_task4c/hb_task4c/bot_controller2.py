@@ -94,7 +94,7 @@ class HBController1(Node):
         self.hb_x = msg.x  # origin shifted
         self.hb_y = msg.y
         self.hb_theta = msg.theta
-        self.get_logger().info('Aruco call')
+        #self.get_logger().info('Aruco call')
 
     def distance(self, x, y):
         return abs(math.sqrt((self.hb_x - x)**2 + (self.hb_y - y)**2))

@@ -55,7 +55,7 @@ class HBController1(Node):
             10  # QoS profile, here it's 10 which means a buffer size of 10 messages
         )
         self.aruco_subscriber = self.create_subscription(
-            Pose2D, '/pen3_bot', self.aruco_callback, 10)
+            Pose2D, '/pen3_pose', self.aruco_callback, 10)
         self.cmd_vel_msg = self.create_publisher(
             Twist, '/cmd_vel/bot3', 10)
 
@@ -94,7 +94,7 @@ class HBController1(Node):
         self.hb_x = msg.x  # origin shifted
         self.hb_y = msg.y
         self.hb_theta = msg.theta
-        self.get_logger().info('Aruco call')
+        #self.get_logger().info('Aruco call')
 
     def distance(self, x, y):
         return abs(math.sqrt((self.hb_x - x)**2 + (self.hb_y - y)**2))
