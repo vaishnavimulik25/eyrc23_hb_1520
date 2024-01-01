@@ -1,3 +1,4 @@
+
 #! /usr/bin/env python3
 
 '''
@@ -55,15 +56,16 @@ class HBController1(Node):
         )
         self.aruco_subscriber = self.create_subscription(
             Pose2D, '/pen1_pose', self.aruco_callback, 10)
-        self.left_pub = self.create_publisher(
+        self.cmd_vel_msg = self.create_publisher(
             Twist, '/cmd_vel/bot1', 10)
+
         # For maintaining control loop rate.
         self.rate = self.create_rate(100)
 
         self.linear_thresh = 5
         self.ang_thresh = 0.1
         # Initialize a Twist message for velocity commands
-        self.cmd_vel_msg = Twist()
+        self.rear_pub = Twist()
 
         # Initialize required variables
         self.x_error = 0.0
@@ -83,8 +85,8 @@ class HBController1(Node):
         self.vel_x = 0.0
         self.vel_y = 0.0
         self.vel_theta = 0.0
-        self.bot_1_x = [175.0]
-        self.bot_1_y = [368.0]
+        self.bot_1_x = [340.0]
+        self.bot_1_y = [366.0]
         self.bot_1_theta = [0.0]
 
     def aruco_callback(self, msg):
@@ -114,17 +116,17 @@ class HBController1(Node):
         self.vel_y = self.k_linear * self.robot_frame_y_vel
         self.vel_theta = self.k_angular * self.theta_error
 
-        # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
         self.inverse_kinematics()
 
-        self.cmd_vel_msg.linear.x = self.v_left
-        self.cmd_vel_msg.linear.y = self.v_right
-        self.cmd_vel_msg.angular.z = self.v_rear
+        self.rear_pub.linear.x = self.v_left
+        self.rear_pub.linear.y = self.v_right
+        self.rear_pub.angular.z = self.v_rear
 
-#        self.cmd_vel_msg.linear.x = 180.0
-#        self.cmd_vel_msg.linear.y = 180.0
-#        self.cmd_vel_msg.angular.z = 180.0
-        self.left_pub.publish(self.cmd_vel_msg)
+        self.cmd_vel_msg.publish(self.rear_pub)
+
+#        # Find the required force vectors for individual wheels from it.(Inverse Kinematics)
+#        self.inverse_kinematics()
+#
 #        # Apply appropriate force vectors
 #        self.vel_left_msg.force.y = self.v_left
 #        self.vel_right_msg.force.y = self.v_right
@@ -132,7 +134,7 @@ class HBController1(Node):
 #
 #        # Publish the calculated efforts to actuate robot by applying force vectors on provided topics
 #        self.left_pub.publish(self.vel_left_msg)
-#        self.right_pub.publiddsh(self.vel_right_msg)
+#        self.right_pub.publish(self.vel_right_msg)
 #        self.rear_pub.publish(self.vel_rear_msg)
 #        # self.get_logger().info('velocity published')
 
@@ -164,9 +166,7 @@ def main(args=None):
     # Main loop
     while rclpy.ok():
         first = time.time()
-        hb_controller1.calculate_velocity_commands(hb_controller1.bot_1_x[0], hb_controller1.bot_1_y[0], hb_controller1.bot_1_theta[0])
-        hb_controller1.get_logger().info('goal callback')
-        if len(hb_controller1.bot_1_x) != 0 and len(hb_controller1.bot_1_y) != 0 and len(hb_controller1.bot_1_theta) != 0 and (first - third) > 10:
+        if len(hb_controller1.bot_1_x) != 0 and len(hb_controller1.bot_1_y) != 0 and len(hb_controller1.bot_1_theta) != 0 and (first - third) > 5:
             hb_controller1.calculate_velocity_commands(hb_controller1.bot_1_x[0], hb_controller1.bot_1_y[0], hb_controller1.bot_1_theta[0])
 
         if abs(hb_controller1.x_error) <= hb_controller1.linear_thresh and abs(hb_controller1.y_error) <= hb_controller1.linear_thresh and hb_controller1.a != 0 and (first - second) > 1 and len(hb_controller1.bot_1_x) != 0 and len(hb_controller1.bot_1_y) != 0 and len(hb_controller1.bot_1_theta) != 0:

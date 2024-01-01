@@ -65,8 +65,8 @@ def generate_launch_description():
     return LaunchDescription([
         camera,
         feedback_node,
-        Controller_node1,
+        #Controller_node1,
         #Controller_node2,
-        #Controller_node3,
+        Controller_node3,
         Next_Goal
         ])

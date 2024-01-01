@@ -7,17 +7,20 @@
 #include <std_msgs/msg/int32.h>
 #include <geometry_msgs/msg/twist.h>
 #include <ESP32Servo.h>
-#include <ESP32Servo360.h>
+//#include <ESP32Servo360.h>
 
 //servo objects created
-ESP32Servo360 rear;
+/*ESP32Servo360 rear;
 ESP32Servo360 left;
-ESP32Servo360 right;
-Servo pen; 
+ESP32Servo360 right;*/
+Servo rear; 
+Servo left;
+Servo right;
+Servo pen;
 
 //pin values to servos
-int left_wheel_pin = 33;
-int right_wheel_pin = 26;
+int left_wheel_pin = 26;
+int right_wheel_pin = 25;
 int rear_wheel_pin = 27;
 
 rcl_subscription_t int_subscriber;
@@ -31,7 +34,7 @@ rcl_allocator_t allocator;
 rcl_node_t node;
 rcl_timer_t timer;
 
-#define PEN_PIN 25 //33,25,26,27 either of these pins to be given voltage
+#define PEN_PIN 33 //33,25,26,27 either of these pins to be given voltage
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
 #define RCSOFTCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){}}
 
@@ -62,13 +65,13 @@ void subscription_callback_int(const void * msgin)
 int findrpm(double velocity) {
   int rpm;
   if (velocity > 500)
-    rpm = 140;
+    rpm = 180;
 
   if (velocity < 500 && velocity > -500) 
-    rpm = map(velocity,-500,500,-140,140);
+    rpm = map(velocity,-500,500,0,180);
 
   if (velocity < -500)
-      rpm = -140;
+      rpm = 0;
 
   return rpm;
 }
@@ -76,7 +79,7 @@ int findrpm(double velocity) {
 //callback for /cmd_vel/bot1 subscription
 void subscription_callback_vel(const void * msgin)
 {
-  Serial.print("Entering into vel subscription");
+  Serial.print("Entering into vel subscription\n");
   const geometry_msgs__msg__Twist * vel_msg = (const geometry_msgs__msg__Twist *)msgin;
   
   // Extract linear and angular velocity from the Twist message
@@ -84,25 +87,27 @@ void subscription_callback_vel(const void * msgin)
   double linear_vely = vel_msg->linear.y;
   double angular_vel = vel_msg->angular.z;
 
-    
+  /*left.write(0);
+  right.write(0);
+  rear.write(0);*/
   // Set servo positions based on calculated angle
-  left.setSpeed(findrpm(linear_velx));
-  right.setSpeed(findrpm(linear_vely));
-  rear.setSpeed(findrpm(angular_vel));
+  left.write(findrpm(linear_velx));
+  right.write(findrpm(linear_vely));
+  rear.write(findrpm(angular_vel));
 }
 
 //initialise the servos
 void servo_init(void){
 
-  left.attach(left_wheel_pin,10);
+ /* left.attach(left_wheel_pin,10);
   right.attach(right_wheel_pin,11);
   rear.attach(rear_wheel_pin,12);
-  pen.attach(PEN_PIN);
+  pen.attach(PEN_PIN);*/
 
-  /*left.attach(left_wheel_pin);
+  left.attach(left_wheel_pin);
   right.attach(right_wheel_pin);
   rear.attach(rear_wheel_pin);
-  pen.attach(PEN_PIN);*/
+  pen.attach(PEN_PIN);
 }
 
 void ros2_init(void){
@@ -125,7 +130,7 @@ void ros2_init(void){
       &vel_subscriber,
       &node,
       ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
-      "/cmd_vel/bot1"));
+      "/cmd_vel/bot3"));
   
   // create executor
   RCCHECK(rclc_executor_init(&executor_int, &support.context, 1, &allocator));
