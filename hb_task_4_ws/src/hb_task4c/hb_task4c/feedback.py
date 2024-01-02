@@ -39,9 +39,13 @@ class ArUcoDetector(Node,CvBridge):
         self.x_centroid = 0.0
         self.x_centroid1 = 0.0
         self.x_centroid2 = 0.0
+        self.x_centroid3 = 0.0
+        self.x_centroid4 = 0.0
         self.y_centroid = 0.0
         self.y_centroid1 = 0.0
         self.y_centroid2 = 0.0
+        self.y_centroid3 = 0.0
+        self.y_centroid4 = 0.0
         self.path_coordinates = []
         self.count = []
         self.count1 = []
@@ -109,7 +113,29 @@ class ArUcoDetector(Node,CvBridge):
                 else :
                     self.theta2 = 1.57
 #               self.theta2 = 0.0
+
+            if ID == 4:
+                # Publish the bot coordinates to the topic  /detected_aruco3
+                (x12,y12) = Corners[0][0][:2]
+                (x22,y22) = Corners[0][1][:2]
+                (x32,y32) = Corners[0][2][:2]
+                (x42,y42) = Corners[0][3][:2]
         
+                self.x_centroid3,self.y_centroid3 = [(x12 + x22 + x32 + x42)/4,(y12 + y22 + y32 + y42)/4]
+            
+            if ID == 8:
+                # Publish the bot coordinates to the topic  /detected_aruco3
+                (x12,y12) = Corners[0][0][:2]
+                (x22,y22) = Corners[0][1][:2]
+                (x32,y32) = Corners[0][2][:2]
+                (x42,y42) = Corners[0][3][:2]
+        
+                self.x_centroid4,self.y_centroid4 = [(x12 + x22 + x32 + x42)/4,(y12 + y22 + y32 + y42)/4]
+        
+        
+        print("coordinates x",self.x_centroid4 - self.x_centroid3,"\n")
+        print("coordinates y",self.y_centroid4 - self.y_centroid3,"\n")
+
         if len(corners) > 0:
             # flatten the ArUco IDs list
             ids = ids.flatten()

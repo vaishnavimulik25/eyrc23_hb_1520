@@ -138,8 +138,8 @@ class HBController1(Node):
 
     def inverse_kinematics(self):
         # Process it further to find what proportions of that effort should be given to 3 individuals wheels !!
-        r = 0.14
-        l = 0.68
+        r = 0.019
+        l = 0.081
         self.matrix_3x3 = np.negative(np.array([[1 / r, -math.sqrt(3) / r, -l / r],
                                                 [1 / r,
                                                     math.sqrt(3) / r, -l / r],
@@ -164,10 +164,11 @@ def main(args=None):
     # Main loop
     while rclpy.ok():
         first = time.time()
-        hb_controller1.calculate_velocity_commands(hb_controller1.bot_1_x[0], hb_controller1.bot_1_y[0], hb_controller1.bot_1_theta[0])
-        hb_controller1.get_logger().info('goal callback')
+        #hb_controller1.calculate_velocity_commands(hb_controller1.bot_1_x[0], hb_controller1.bot_1_y[0], hb_controller1.bot_1_theta[0])
+        #hb_controller1.get_logger().info('goal callback')
         if len(hb_controller1.bot_1_x) != 0 and len(hb_controller1.bot_1_y) != 0 and len(hb_controller1.bot_1_theta) != 0 and (first - third) > 10:
             hb_controller1.calculate_velocity_commands(hb_controller1.bot_1_x[0], hb_controller1.bot_1_y[0], hb_controller1.bot_1_theta[0])
+            #hb_controller1.get_logger().info('goal callback')
 
         if abs(hb_controller1.x_error) <= hb_controller1.linear_thresh and abs(hb_controller1.y_error) <= hb_controller1.linear_thresh and hb_controller1.a != 0 and (first - second) > 1 and len(hb_controller1.bot_1_x) != 0 and len(hb_controller1.bot_1_y) != 0 and len(hb_controller1.bot_1_theta) != 0:
             second = time.time()
