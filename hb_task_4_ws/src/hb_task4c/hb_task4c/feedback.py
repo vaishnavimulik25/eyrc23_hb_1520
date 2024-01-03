@@ -69,23 +69,17 @@ class ArUcoDetector(Node,CvBridge):
         
         cv_image = cv2.undistort(cv_image,camera_matrix_data,distortion_coefficients_data)
         
-        #convert into 220x220cm and 500x500 pixels
-        pixel_per_cm = 2.273
+        #Rotate image 
+        M = cv2.getRotationMatrix2D((cv_image.shape[1]/2, cv_image.shape[0]/2), 3.5, 1.0)
+        cv_image = cv2.warpAffine(img, M, (cv_image.shape[1], cv_image.shape[0]))
 
-        desired_width = 220
-        desired_height = 220
+        #Crop the image using slicing matrix
+        cv_image = cv_image[70:450, 98:380]  # (y1:y2, x1:x2)
 
-        desired_width_px = int(desired_width * pixel_per_cm)
-        desired_height_px = int(desired_height * pixel_per_cm)
+        #Resize image
+        cv_image = cv2.resize(cv_image,(cv_image.shape[1]+220,cv_image.shape[0]+120))
 
-        cv_image = cv2.resize(cv_image,
-                (desired_width_px,desired_height_px),interpolation=cv2.INTER_AREA)
-
-        #rectify image
-        R = np.array([1., 0., 0.,0., 1., 0.,0., 0.,
-            1.]).reshape(3,3)
-        cv_image = cv2.warpPerspective(cv_image,R,cv_image.shape[1::-1])
-
+        
         #Detect Aruco marker
         arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100)
         arucoParams = cv2.aruco.DetectorParameters()
