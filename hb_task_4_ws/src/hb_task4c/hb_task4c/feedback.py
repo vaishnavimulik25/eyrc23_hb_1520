@@ -62,6 +62,29 @@ class ArUcoDetector(Node,CvBridge):
         cvb = CvBridge()
         cv_image = cvb.imgmsg_to_cv2(msg,desired_encoding='bgr8')
         #self.get_logger().info("cv image converted")        
+        
+        #undistort image
+        camera_matrix_data = np.array([435.72155, 0., 342.73125, 0., 439.05066, 234.28296, 0., 0., 1.]).reshape(3, 3)
+        distortion_coefficients_data = np.array([-0.327652, 0.079815, -0.000013, -0.001481, 0.000000])
+        
+        cv_image = cv2.undistort(cv_image,camera_matrix_data,distortion_coefficients_data)
+        
+        #convert into 220x220cm and 500x500 pixels
+        pixel_per_cm = 2.273
+
+        desired_width = 220
+        desired_height = 220
+
+        desired_width_px = int(desired_width * pixel_per_cm)
+        desired_height_px = int(desired_height * pixel_per_cm)
+
+        cv_image = cv2.resize(cv_image,
+                (desired_width_px,desired_height_px),interpolation=cv2.INTER_AREA)
+
+        #rectify image
+        R = np.array([1., 0., 0.,0., 1., 0.,0., 0.,
+            1.]).reshape(3,3)
+        cv_image = cv2.warpPerspective(cv_image,R,cv_image.shape[1::-1])
 
         #Detect Aruco marker
         arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100)
@@ -114,7 +137,7 @@ class ArUcoDetector(Node,CvBridge):
                     self.theta2 = 1.57
 #               self.theta2 = 0.0
 
-            if ID == 4:
+            if ID == 10:
                 # Publish the bot coordinates to the topic  /detected_aruco3
                 (x12,y12) = Corners[0][0][:2]
                 (x22,y22) = Corners[0][1][:2]
@@ -123,18 +146,9 @@ class ArUcoDetector(Node,CvBridge):
         
                 self.x_centroid3,self.y_centroid3 = [(x12 + x22 + x32 + x42)/4,(y12 + y22 + y32 + y42)/4]
             
-            if ID == 8:
-                # Publish the bot coordinates to the topic  /detected_aruco3
-                (x12,y12) = Corners[0][0][:2]
-                (x22,y22) = Corners[0][1][:2]
-                (x32,y32) = Corners[0][2][:2]
-                (x42,y42) = Corners[0][3][:2]
         
-                self.x_centroid4,self.y_centroid4 = [(x12 + x22 + x32 + x42)/4,(y12 + y22 + y32 + y42)/4]
-        
-        
-        print("coordinates x",self.x_centroid4 - self.x_centroid3,"\n")
-        print("coordinates y",self.y_centroid4 - self.y_centroid3,"\n")
+        print("coordinates x",self.x_centroid3,"\n")
+        print("coordinates y",self.y_centroid3,"\n")
 
         if len(corners) > 0:
             # flatten the ArUco IDs list
