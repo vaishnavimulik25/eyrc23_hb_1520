@@ -39,13 +39,19 @@ class ArUcoDetector(Node,CvBridge):
         self.x_centroid = 0.0
         self.x_centroid1 = 0.0
         self.x_centroid2 = 0.0
-        self.x_centroid3 = 0.0
         self.x_centroid4 = 0.0
+        self.x_centroid8 = 0.0
+        self.x_centroid10 = 0.0
+        self.x_centroid12 = 0.0
+        
         self.y_centroid = 0.0
         self.y_centroid1 = 0.0
         self.y_centroid2 = 0.0
-        self.y_centroid3 = 0.0
         self.y_centroid4 = 0.0
+        self.y_centroid8 = 0.0
+        self.y_centroid10 = 0.0
+        self.y_centroid12 = 0.0
+
         self.path_coordinates = []
         self.count = []
         self.count1 = []
@@ -62,23 +68,6 @@ class ArUcoDetector(Node,CvBridge):
         cvb = CvBridge()
         cv_image = cvb.imgmsg_to_cv2(msg,desired_encoding='bgr8')
         #self.get_logger().info("cv image converted")        
-        
-        #undistort image
-        camera_matrix_data = np.array([435.72155, 0., 342.73125, 0., 439.05066, 234.28296, 0., 0., 1.]).reshape(3, 3)
-        distortion_coefficients_data = np.array([-0.327652, 0.079815, -0.000013, -0.001481, 0.000000])
-        
-        cv_image = cv2.undistort(cv_image,camera_matrix_data,distortion_coefficients_data)
-        
-        #Rotate image 
-        M = cv2.getRotationMatrix2D((cv_image.shape[1]/2, cv_image.shape[0]/2), 3.5, 1.0)
-        cv_image = cv2.warpAffine(img, M, (cv_image.shape[1], cv_image.shape[0]))
-
-        #Crop the image using slicing matrix
-        cv_image = cv_image[70:450, 98:380]  # (y1:y2, x1:x2)
-
-        #Resize image
-        cv_image = cv2.resize(cv_image,(cv_image.shape[1]+220,cv_image.shape[0]+120))
-
         
         #Detect Aruco marker
         arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100)
@@ -131,6 +120,24 @@ class ArUcoDetector(Node,CvBridge):
                     self.theta2 = 1.57
 #               self.theta2 = 0.0
 
+            if ID == 4:
+                # Publish the bot coordinates to the topic  /detected_aruco3
+                (x12,y12) = Corners[0][0][:2]
+                (x22,y22) = Corners[0][1][:2]
+                (x32,y32) = Corners[0][2][:2]
+                (x42,y42) = Corners[0][3][:2]
+        
+                self.x_centroid4,self.y_centroid4 = [(x12 + x22 + x32 + x42)/4,(y12 + y22 + y32 + y42)/4]
+            
+            if ID == 8:
+                # Publish the bot coordinates to the topic  /detected_aruco3
+                (x12,y12) = Corners[0][0][:2]
+                (x22,y22) = Corners[0][1][:2]
+                (x32,y32) = Corners[0][2][:2]
+                (x42,y42) = Corners[0][3][:2]
+        
+                self.x_centroid8,self.y_centroid8 = [(x12 + x22 + x32 + x42)/4,(y12 + y22 + y32 + y42)/4]
+        
             if ID == 10:
                 # Publish the bot coordinates to the topic  /detected_aruco3
                 (x12,y12) = Corners[0][0][:2]
@@ -138,11 +145,17 @@ class ArUcoDetector(Node,CvBridge):
                 (x32,y32) = Corners[0][2][:2]
                 (x42,y42) = Corners[0][3][:2]
         
-                self.x_centroid3,self.y_centroid3 = [(x12 + x22 + x32 + x42)/4,(y12 + y22 + y32 + y42)/4]
-            
+                self.x_centroid10,self.y_centroid10 = [(x12 + x22 + x32 + x42)/4,(y12 + y22 + y32 + y42)/4]
         
-        print("coordinates x",self.x_centroid3,"\n")
-        print("coordinates y",self.y_centroid3,"\n")
+
+            if ID == 12:
+                # Publish the bot coordinates to the topic  /detected_aruco3
+                (x12,y12) = Corners[0][0][:2]
+                (x22,y22) = Corners[0][1][:2]
+                (x32,y32) = Corners[0][2][:2]
+                (x42,y42) = Corners[0][3][:2]
+        
+                self.x_centroid12,self.y_centroid12 = [(x12 + x22 + x32 + x42)/4,(y12 + y22 + y32 + y42)/4]
 
         if len(corners) > 0:
             # flatten the ArUco IDs list
@@ -260,6 +273,25 @@ class ArUcoDetector(Node,CvBridge):
         #created /detected_aruco_3 topic
         self.aruco_publisher2 = self.create_publisher(Pose2D,'/pen3_pose',10)
         self.aruco_publisher2.publish(coordinates2)
+
+        #undistort image
+        camera_matrix_data = np.array([435.72155, 0., 342.73125, 0., 439.05066, 234.28296, 0., 0., 1.]).reshape(3, 3)
+        distortion_coefficients_data = np.array([-0.327652, 0.079815, -0.000013, -0.001481, 0.000000])
+        
+        cv_image = cv2.undistort(cv_image,camera_matrix_data,distortion_coefficients_data)
+        
+        #Rotate image 
+        M = cv2.getRotationMatrix2D((cv_image.shape[1]/2, cv_image.shape[0]/2), 3.5, 1.0)
+        cv_image = cv2.warpAffine(img, M, (cv_image.shape[1], cv_image.shape[0]))
+
+        #Resize image
+        cv_image = cv2.resize(cv_image,(cv_image.shape[1]+220,cv_image.shape[0]+120))
+        
+        #Crop the image using slicing matrix
+        cv_image = cv_image[self.y_centroid12:(500 - self.y_centroid10), (500 - self.x_centroid4):self.x_centroid8]  # (y1:y2, x1:x2)
+        
+        cv_image = cv2.resize(cv_image,(500,500))
+
         cv2.imshow("Camera output resized", cv_image)
 
 def main(args=None):
